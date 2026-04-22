@@ -65,7 +65,7 @@ export default function DrugSearch() {
                       onClick={() => setIsOpen(false)}
                     >
                       <span className="font-semibold">{drug.name}</span>
-                      <span className="block text-xs text-slate-500 mt-1">{drug.groupEffect}</span>
+                      <span className="block text-xs text-slate-500 mt-1">{(drug as any).groupEffect}</span>
                     </Link>
                   </li>
                 ))}

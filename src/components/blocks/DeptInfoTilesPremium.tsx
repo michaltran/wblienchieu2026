@@ -61,7 +61,7 @@ export default function DeptInfoTilesPremium({ dept }: Props) {
                              </div>
                              
                              <ul className="space-y-2 mb-4 flex-1">
-                                 {dept.info.services.slice(0, 5).map((svc, sIdx) => (
+                                 {dept.info.services.slice(0, 5).map((svc: any, sIdx: number) => (
                                      <li key={sIdx} className="flex items-start gap-2 text-sm text-slate-600">
                                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5 shrink-0" />
                                          <span className="line-clamp-1">{svc}</span>

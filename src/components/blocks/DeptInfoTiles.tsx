@@ -97,7 +97,7 @@ export default function DeptInfoTiles({ dept }: Props) {
                  Danh sách dịch vụ kỹ thuật
              </h3>
              <div className="flex flex-wrap gap-2">
-                 {dept.info.services.map((svc, i) => (
+                 {dept.info.services.map((svc: any, i: number) => (
                      <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 shadow-sm">
                          {svc}
                      </span>

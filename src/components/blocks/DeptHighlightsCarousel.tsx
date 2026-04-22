@@ -10,20 +10,23 @@ interface Props {
 }
 
 export default function DeptHighlightsCarousel({ dept }: Props) {
+    const highlights = (dept as any).highlights || [];
     const [currentIndex, setCurrentIndex] = useState(0);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     
     // Autoplay
     useEffect(() => {
-        if (lightboxOpen) return;
+        if (lightboxOpen || highlights.length === 0) return;
         const timer = setInterval(() => {
-            setCurrentIndex(prev => (prev + 1) % dept.highlights.length);
+            setCurrentIndex(prev => (prev + 1) % highlights.length);
         }, 6000);
         return () => clearInterval(timer);
-    }, [dept.highlights.length, lightboxOpen]);
+    }, [highlights.length, lightboxOpen]);
 
-    const next = () => setCurrentIndex(prev => (prev + 1) % dept.highlights.length);
-    const prev = () => setCurrentIndex(prev => (prev - 1 + dept.highlights.length) % dept.highlights.length);
+    const next = () => setCurrentIndex(prev => (prev + 1) % highlights.length);
+    const prev = () => setCurrentIndex(prev => (prev - 1 + highlights.length) % highlights.length);
+
+    if (highlights.length === 0) return null;
 
     return (
         <div id="activities" className="scroll-mt-40">
@@ -48,7 +51,7 @@ export default function DeptHighlightsCarousel({ dept }: Props) {
                   className="w-full h-full cursor-zoom-in"
                   onClick={() => setLightboxOpen(true)}
                >
-                   {dept.highlights.map((item, idx) => (
+                   {highlights.map((item: any, idx: number) => (
                        <div 
                            key={idx}
                            className={cn(
@@ -70,7 +73,7 @@ export default function DeptHighlightsCarousel({ dept }: Props) {
                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 md:p-12 text-white">
                                <h3 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h3>
                                <div className="text-sm font-medium opacity-80">
-                                   Ảnh {idx + 1} / {dept.highlights.length}
+                                   Ảnh {idx + 1} / {highlights.length}
                                </div>
                            </div>
                        </div>
@@ -85,7 +88,7 @@ export default function DeptHighlightsCarousel({ dept }: Props) {
 
            {/* Thumbs Strip */}
            <div className="mt-4 flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x">
-               {dept.highlights.map((item, idx) => (
+               {highlights.map((item: any, idx: number) => (
                    <button
                        key={idx}
                        onClick={() => setCurrentIndex(idx)}
@@ -102,7 +105,7 @@ export default function DeptHighlightsCarousel({ dept }: Props) {
            <Lightbox 
                isOpen={lightboxOpen} 
                onClose={() => setLightboxOpen(false)}
-               images={dept.highlights.map(h => h.image)}
+               images={highlights.map((h: any) => h.image)}
                initialIndex={currentIndex}
            />
         </div>

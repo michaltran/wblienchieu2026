@@ -31,11 +31,11 @@ export default function DrugList({ drugs, currentPage, totalPages, onPageChange 
             className="group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex items-start gap-4"
           >
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
-              <span className="font-bold text-lg">{drug.letter}</span>
+              <span className="font-bold text-lg">{(drug as any).letter || drug.name.charAt(0).toUpperCase()}</span>
             </div>
             <div className="flex-1 min-w-0">
                <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors truncate">{drug.name}</h4>
-               <p className="text-xs text-slate-500 truncate">{drug.groupEffect || "Chưa cập nhật nhóm"}</p>
+               <p className="text-xs text-slate-500 truncate">{(drug as any).groupEffect || "Chưa cập nhật nhóm"}</p>
             </div>
             <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors self-center" />
           </Link>

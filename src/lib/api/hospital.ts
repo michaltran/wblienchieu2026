@@ -117,32 +117,32 @@ export const hospitalApi = {
 // Admin APIs for Hospital CRUD
 export const doctorsApi = {
   list: async (params: any) => (await http.get('/api/hospital/doctors', { params })).data,
-  get: async (id: string) => (await http.get(`/api/hospital/doctors/${id}`)).data,
+  get: async (id: string | number) => (await http.get(`/api/hospital/doctors/${id}`)).data,
   create: async (data: any) => (await http.post('/api/hospital/doctors', data)).data,
-  update: async (id: string, data: any) => (await http.patch(`/api/hospital/doctors/${id}`, data)).data,
-  remove: async (id: string) => (await http.delete(`/api/hospital/doctors/${id}`)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/doctors/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/hospital/doctors/${id}`)).data,
 };
 
 export const departmentsApi = {
   list: async (params: any) => (await http.get('/api/hospital/departments', { params })).data,
-  get: async (id: string) => (await http.get(`/api/hospital/departments/${id}`)).data,
+  get: async (id: string | number) => (await http.get(`/api/hospital/departments/${id}`)).data,
   create: async (data: any) => (await http.post('/api/hospital/departments', data)).data,
-  update: async (id: string, data: any) => (await http.patch(`/api/hospital/departments/${id}`, data)).data,
-  remove: async (id: string) => (await http.delete(`/api/hospital/departments/${id}`)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/departments/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/hospital/departments/${id}`)).data,
 };
 
 export const servicesApi = {
   list: async (params: any) => (await http.get('/api/hospital/services', { params })).data,
-  get: async (id: string) => (await http.get(`/api/hospital/services/${id}`)).data,
+  get: async (id: string | number) => (await http.get(`/api/hospital/services/${id}`)).data,
   create: async (data: any) => (await http.post('/api/hospital/services', data)).data,
-  update: async (id: string, data: any) => (await http.patch(`/api/hospital/services/${id}`, data)).data,
-  remove: async (id: string) => (await http.delete(`/api/hospital/services/${id}`)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/services/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/hospital/services/${id}`)).data,
 };
 
 export const drugsApi = {
   list: async (params: any) => (await http.get('/api/hospital/drugs', { params })).data,
-  get: async (id: string) => (await http.get(`/api/hospital/drugs/${id}`)).data,
+  get: async (id: string | number) => (await http.get(`/api/hospital/drugs/${id}`)).data,
   create: async (data: any) => (await http.post('/api/hospital/drugs', data)).data,
-  update: async (id: string, data: any) => (await http.patch(`/api/hospital/drugs/${id}`, data)).data,
-  remove: async (id: string) => (await http.delete(`/api/hospital/drugs/${id}`)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/drugs/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/hospital/drugs/${id}`)).data,
 };

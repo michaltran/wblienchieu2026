@@ -53,12 +53,12 @@ export default function AlbumStrip({ albums, selectedAlbumId, onSelectAlbum }: A
                     )}
                 >
                     <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-white/20">
-                        <img src={album.coverUrl} alt={album.title} className="w-full h-full object-cover" />
+                        <img src={album.coverImage} alt={album.title} className="w-full h-full object-cover" />
                     </div>
                     <div className="text-left overflow-hidden">
                         <div className="font-bold text-sm truncate w-full">{album.title}</div>
                         <div className={cn("text-xs opacity-80", selectedAlbumId === album.id ? "text-blue-100" : "text-slate-400")}>
-                            {album.photos.length} {t('photo_stats_photos')}
+                            {(album as any).photos?.length || 0} {t('photo_stats_photos')}
                         </div>
                     </div>
                 </button>

@@ -8,6 +8,8 @@ interface Props {
 
 export default function DeptLeadershipPremium({ dept }: Props) {
   const isHanhChinh = dept.block === 'hanh-chinh';
+  const leaders = (dept as any).leaders || [];
+  const teamImage = (dept as any).teamImage;
   
   return (
     <div id="co-cau" className="scroll-mt-40">
@@ -22,7 +24,7 @@ export default function DeptLeadershipPremium({ dept }: Props) {
             
             {/* Leaders Cards (5 cols) */}
             <div className="lg:col-span-12 xl:col-span-5 space-y-4">
-                {dept.leaders.map((leader, idx) => {
+                {leaders.map((leader: any, idx: number) => {
                     // Logic for title display
                     let displayTitle = leader.title;
                     if (isHanhChinh) {
@@ -60,7 +62,7 @@ export default function DeptLeadershipPremium({ dept }: Props) {
                     </div>
                     {/* Real Image if available */}
                     <img 
-                        src={dept.teamImage} 
+                        src={teamImage} 
                         alt={`Tập thể ${dept.name}`}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         onError={(e) => e.currentTarget.style.display = 'none'}
