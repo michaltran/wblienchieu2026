@@ -10,9 +10,7 @@ import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
 import { Modal } from "../components/ui/Modal";
-import { specialties } from "../data/specialties";
-import { services } from "../data/services";
-import { doctors } from "../data/doctors";
+import { usePublicDepartments, usePublicServices, usePublicDoctors } from "../hooks/useHospital";
 
 // Schema Validation
 const appointmentSchema = z.object({
@@ -46,6 +44,14 @@ export default function Appointment() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState<AppointmentFormValues | null>(null);
 
+  const { data: deptData } = usePublicDepartments({ limit: 100 });
+  const { data: serviceData } = usePublicServices({ limit: 100 });
+  const { data: docData } = usePublicDoctors({ limit: 100 });
+
+  const specialties = deptData?.items || [];
+  const services = serviceData?.items || [];
+  const doctors = docData?.items || [];
+
   const {
     register,
     handleSubmit,
@@ -74,8 +80,9 @@ export default function Appointment() {
   const [prefilledDoctorName, setPrefilledDoctorName] = useState<string | null>(null);
 
   useEffect(() => {
+    if (doctors.length === 0) return; // wait until loaded
     if (prefillDoctorSlug) {
-      const foundDoc = doctors.find(d => d.slug === prefillDoctorSlug);
+      const foundDoc = doctors.find((d: any) => d.slug === prefillDoctorSlug);
       if (foundDoc) {
         setValue("doctor", foundDoc.id);
         setPrefilledDoctorName(foundDoc.name);
@@ -83,14 +90,14 @@ export default function Appointment() {
         // Auto-select specialty if provided or derived from doctor
         if (prefillSpecialtyId) {
            setValue("specialty", prefillSpecialtyId);
-        } else if (foundDoc.specialtyId) {
-           setValue("specialty", foundDoc.specialtyId);
+        } else if (foundDoc.departmentId) {
+           setValue("specialty", foundDoc.departmentId);
         }
       }
     } else if (prefillSpecialtyId) {
       setValue("specialty", prefillSpecialtyId);
     }
-  }, [prefillDoctorSlug, prefillSpecialtyId, setValue]);
+  }, [prefillDoctorSlug, prefillSpecialtyId, setValue, doctors]);
 
   const clearPrefill = () => {
     setSearchParams({});
@@ -161,7 +168,7 @@ export default function Appointment() {
                     <label className="block text-sm font-medium text-slate-700 mb-1">Chuyên khoa <span className="text-red-500">*</span></label>
                     <Select {...register("specialty")} className={errors.specialty ? "border-red-500" : ""}>
                       <option value="">-- Chọn chuyên khoa --</option>
-                      {specialties.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                      {specialties.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </Select>
                     {errors.specialty && <p className="text-xs text-red-500 mt-1">{errors.specialty.message}</p>}
                   </div>
@@ -170,7 +177,7 @@ export default function Appointment() {
                     <label className="block text-sm font-medium text-slate-700 mb-1">Dịch vụ <span className="text-red-500">*</span></label>
                     <Select {...register("service")} className={errors.service ? "border-red-500" : ""}>
                        <option value="">-- Chọn dịch vụ --</option>
-                       {services.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                       {services.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </Select>
                     {errors.service && <p className="text-xs text-red-500 mt-1">{errors.service.message}</p>}
                   </div>
@@ -180,8 +187,8 @@ export default function Appointment() {
                     <Select {...register("doctor")}>
                       <option value="">-- Chọn bác sĩ --</option>
                       {doctors
-                        .filter(d => !selectedSpecialty || d.specialtyId === selectedSpecialty)
-                        .map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        .filter((d: any) => !selectedSpecialty || d.departmentId === selectedSpecialty)
+                        .map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
                     </Select>
                   </div>
 
@@ -309,7 +316,7 @@ export default function Appointment() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Đặt lịch thành công!</h2>
           <p className="text-slate-600 mb-6">
-            Cảm ơn bạn đã tin tưởng TTYT Liên Chiểu. Chúng tôi đã nhận được thông tin đặt khám của bạn.
+            Cảm ơn bạn đã tin tưởng TTYT Liên Chiểu. Chúng tôi đã nhận được thôngợp tin đặt khám của bạn.
           </p>
 
           {submittedData && (
@@ -317,7 +324,7 @@ export default function Appointment() {
                 <p><strong>Họ tên:</strong> {submittedData.fullname}</p>
                 <p><strong>Số điện thoại:</strong> {submittedData.phone}</p>
                 <p><strong>Ngày khám:</strong> {format(new Date(submittedData.date), "dd/MM/yyyy")} - {submittedData.time}</p>
-                <p><strong>Chuyên khoa:</strong> {specialties.find(s => s.id === submittedData.specialty)?.name}</p>
+                <p><strong>Chuyên khoa:</strong> {specialties.find((s: any) => s.id === submittedData.specialty)?.name}</p>
              </div>
           )}
 

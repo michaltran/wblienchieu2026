@@ -1,5 +1,5 @@
 import { ST } from "../../styles/specialtyTokens";
-import type { Department } from "../../data/departments";
+import type { Department } from "../../lib/api/hospital";
 import { Phone, Syringe, ArrowRight, Info } from "lucide-react";
 import { cn } from "../../lib/cn";
 

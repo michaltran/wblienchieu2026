@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { contentApi } from '../lib/api/content';
-import { ListParams } from '../lib/api/posts';
+import type { ListParams } from '../lib/api/posts';
 
 export function usePublicBanners(position: string = 'home_hero') {
   return useQuery({
@@ -23,9 +23,9 @@ export function usePublicSettings() {
   });
 }
 
-export function usePublicMedia(params?: ListParams & { type?: string; albumId?: string }) {
+export function usePublicMedia(params?: Omit<ListParams, 'type'> & { type?: string; albumId?: string }) {
   return useQuery({
     queryKey: ['public', 'media', params],
-    queryFn: () => contentApi.publicListMedia(params),
+    queryFn: () => contentApi.publicListMedia(params as any),
   });
 }

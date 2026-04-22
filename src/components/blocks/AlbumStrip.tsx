@@ -1,5 +1,5 @@
 import { useI18n } from "../../i18n/I18nContext";
-import type { Album } from "../../data/photos";
+import type { Album } from "../../lib/api/content";
 import { cn } from "../../lib/cn";
 import { LayoutGrid } from "lucide-react";
 

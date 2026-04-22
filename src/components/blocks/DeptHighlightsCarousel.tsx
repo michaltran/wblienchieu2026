@@ -1,5 +1,5 @@
 import { ST } from "../../styles/specialtyTokens";
-import type { Department } from "../../data/departments";
+import type { Department } from "../../lib/api/hospital";
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import Lightbox from "../ui/Lightbox";

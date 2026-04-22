@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { ST } from "../../styles/specialtyTokens";
-import type { Department } from "../../data/departments";
+import type { Department } from "../../lib/api/hospital";
 import { ChevronLeft, ChevronRight, Maximize2, Sparkles, Image as ImageIcon } from "lucide-react";
 import Lightbox from "../ui/Lightbox";
 import { cn } from "../../lib/cn";

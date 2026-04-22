@@ -2,7 +2,7 @@ import { ST } from "../../styles/specialtyTokens";
 import { Calendar, Phone, Mail, Clock, MapPin } from "lucide-react";
 import Breadcrumb from "../ui/Breadcrumb";
 import { useI18n } from "../../i18n/I18nContext";
-import type { Department } from "../../data/departments";
+import type { Department } from "../../lib/api/hospital";
 import { Link } from "react-router-dom";
 
 interface Props {

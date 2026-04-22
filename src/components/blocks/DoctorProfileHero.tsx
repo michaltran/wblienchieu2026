@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Doctor } from "../../data/doctors";
+import type { Doctor } from "../../lib/api/hospital";
 import { Button } from "../ui/Button";
 import { Calendar, Phone, Mail, MapPin } from "lucide-react";
 

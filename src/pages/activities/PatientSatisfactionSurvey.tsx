@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight, Star, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { departments } from "../../data/departments";
 import { submitSurvey, type SurveyPayload } from "../../lib/api/surveyApi";
+import { usePublicDepartments } from "../../hooks/useHospital";
 import { cn } from "../../lib/cn";
 
 export default function PatientSatisfactionSurvey() {
+  const { data: deptData } = usePublicDepartments({ limit: 100 });
+  const departments = deptData?.items || [];
+
   const [formData, setFormData] = useState<Partial<SurveyPayload>>({
     visitDate: new Date().toISOString().split('T')[0],
     visitType: "BHYT",
@@ -224,8 +227,8 @@ export default function PatientSatisfactionSurvey() {
                             onChange={e => handleChange("department", e.target.value)}
                          >
                              <option value="">Chọn khoa phòng...</option>
-                             {departments.map(d => (
-                                 <option key={d.slug} value={d.name}>{d.name}</option>
+                             {departments.map((d: any) => (
+                                 <option key={d.id} value={d.name}>{d.name}</option>
                              ))}
                              <option value="Khac">Khác</option>
                          </select>

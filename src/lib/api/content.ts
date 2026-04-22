@@ -1,5 +1,5 @@
 import { http } from './http';
-import { ListParams, PaginatedResponse } from './posts';
+import type { ListParams, ListResponse } from './posts';
 
 export interface Banner {
   id: string;
@@ -48,13 +48,13 @@ export const contentApi = {
   },
 
   // Albums
-  publicListAlbums: async (params?: ListParams): Promise<PaginatedResponse<Album>> => {
+  publicListAlbums: async (params?: ListParams): Promise<ListResponse<Album>> => {
     const response = await http.get('/api/content/albums/public', { params });
     return response.data;
   },
   
   // Media
-  publicListMedia: async (params?: ListParams & { type?: string; albumId?: string }): Promise<PaginatedResponse<Media>> => {
+  publicListMedia: async (params?: Omit<ListParams, 'type'> & { type?: string; albumId?: string }): Promise<ListResponse<Media>> => {
     const response = await http.get('/api/content/media/public', { params });
     return response.data;
   },

@@ -1,4 +1,4 @@
-import type { Photo } from "../../data/photos";
+import type { Media as Photo } from "../../lib/api/content";
 import { Maximize2, Download } from "lucide-react";
 import { cn } from "../../lib/cn";
 

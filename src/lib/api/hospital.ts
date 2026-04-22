@@ -1,5 +1,5 @@
 import { http } from './http';
-import { ListParams, PaginatedResponse } from './posts'; // Re-use the pagination types
+import type { ListParams, ListResponse } from './posts'; // Re-use the pagination types
 
 export interface Doctor {
   id: string;
@@ -74,7 +74,7 @@ export interface Drug {
 
 export const hospitalApi = {
   // Doctors
-  publicListDoctors: async (params?: ListParams): Promise<PaginatedResponse<Doctor>> => {
+  publicListDoctors: async (params?: ListParams): Promise<ListResponse<Doctor>> => {
     const response = await http.get('/api/hospital/doctors/public', { params });
     return response.data;
   },
@@ -84,7 +84,7 @@ export const hospitalApi = {
   },
 
   // Departments
-  publicListDepartments: async (params?: ListParams): Promise<PaginatedResponse<Department>> => {
+  publicListDepartments: async (params?: ListParams): Promise<ListResponse<Department>> => {
     const response = await http.get('/api/hospital/departments/public', { params });
     return response.data;
   },
@@ -94,7 +94,7 @@ export const hospitalApi = {
   },
 
   // Services
-  publicListServices: async (params?: ListParams): Promise<PaginatedResponse<Service>> => {
+  publicListServices: async (params?: ListParams): Promise<ListResponse<Service>> => {
     const response = await http.get('/api/hospital/services/public', { params });
     return response.data;
   },
@@ -104,7 +104,7 @@ export const hospitalApi = {
   },
 
   // Drugs
-  publicListDrugs: async (params?: ListParams): Promise<PaginatedResponse<Drug>> => {
+  publicListDrugs: async (params?: ListParams): Promise<ListResponse<Drug>> => {
     const response = await http.get('/api/hospital/drugs/public', { params });
     return response.data;
   },
@@ -112,4 +112,37 @@ export const hospitalApi = {
     const response = await http.get(`/api/hospital/drugs/public/${slug}`);
     return response.data;
   },
+};
+
+// Admin APIs for Hospital CRUD
+export const doctorsApi = {
+  list: async (params: any) => (await http.get('/api/hospital/doctors', { params })).data,
+  get: async (id: string) => (await http.get(`/api/hospital/doctors/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/hospital/doctors', data)).data,
+  update: async (id: string, data: any) => (await http.patch(`/api/hospital/doctors/${id}`, data)).data,
+  remove: async (id: string) => (await http.delete(`/api/hospital/doctors/${id}`)).data,
+};
+
+export const departmentsApi = {
+  list: async (params: any) => (await http.get('/api/hospital/departments', { params })).data,
+  get: async (id: string) => (await http.get(`/api/hospital/departments/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/hospital/departments', data)).data,
+  update: async (id: string, data: any) => (await http.patch(`/api/hospital/departments/${id}`, data)).data,
+  remove: async (id: string) => (await http.delete(`/api/hospital/departments/${id}`)).data,
+};
+
+export const servicesApi = {
+  list: async (params: any) => (await http.get('/api/hospital/services', { params })).data,
+  get: async (id: string) => (await http.get(`/api/hospital/services/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/hospital/services', data)).data,
+  update: async (id: string, data: any) => (await http.patch(`/api/hospital/services/${id}`, data)).data,
+  remove: async (id: string) => (await http.delete(`/api/hospital/services/${id}`)).data,
+};
+
+export const drugsApi = {
+  list: async (params: any) => (await http.get('/api/hospital/drugs', { params })).data,
+  get: async (id: string) => (await http.get(`/api/hospital/drugs/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/hospital/drugs', data)).data,
+  update: async (id: string, data: any) => (await http.patch(`/api/hospital/drugs/${id}`, data)).data,
+  remove: async (id: string) => (await http.delete(`/api/hospital/drugs/${id}`)).data,
 };

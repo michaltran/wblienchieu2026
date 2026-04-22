@@ -38,11 +38,11 @@ export default function SpecialtyHub() {
 
   // Logic
   const filteredDepartments = useMemo(() => {
-      let result = departments.filter(d => d.block === currentBlock);
+      let result = departments.filter((d: any) => d.block === currentBlock);
       
       if (search) {
           const lower = search.toLowerCase();
-          result = result.filter(d => 
+          result = result.filter((d: any) => 
               d.name.toLowerCase().includes(lower) || 
               (d.missionText && d.missionText.toLowerCase().includes(lower))
           );
@@ -103,7 +103,7 @@ export default function SpecialtyHub() {
             </div>
          ) : resultCount > 0 ? (
              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {filteredDepartments.map(dept => (
+                {filteredDepartments.map((dept: any) => (
                     <DepartmentCardPremium key={dept.id} dept={dept as any} />
                 ))}
              </div>

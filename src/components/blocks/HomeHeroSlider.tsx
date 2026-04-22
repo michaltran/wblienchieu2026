@@ -12,12 +12,12 @@ import banner3 from "../../assets/banners/banner-03.svg";
 import banner4 from "../../assets/banners/banner-04.svg";
 import banner5 from "../../assets/banners/banner-05.svg";
 
-const fallbackBanners = [
-  { desktopImage: banner1, title: 'Banner 1' },
-  { desktopImage: banner2, title: 'Banner 2' },
-  { desktopImage: banner3, title: 'Banner 3' },
-  { desktopImage: banner4, title: 'Banner 4' },
-  { desktopImage: banner5, title: 'Banner 5' }
+const fallbackBanners: any[] = [
+  { id: '1', desktopImage: banner1, title: 'Banner 1' },
+  { id: '2', desktopImage: banner2, title: 'Banner 2' },
+  { id: '3', desktopImage: banner3, title: 'Banner 3' },
+  { id: '4', desktopImage: banner4, title: 'Banner 4' },
+  { id: '5', desktopImage: banner5, title: 'Banner 5' }
 ];
 
 export default function HomeHeroSlider() {

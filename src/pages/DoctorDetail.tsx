@@ -62,7 +62,7 @@ export default function DoctorDetail() {
   // Related Doctors
   const allDoctors = allDoctorsData?.items || [];
   const relatedDoctors = allDoctors
-    .filter(d => d.id !== doctor.id && d.specialty === doctor.specialty)
+    .filter((d: any) => d.id !== doctor.id && d.departmentId === doctor.departmentId)
     .slice(0, 4);
 
   return (
@@ -90,7 +90,7 @@ export default function DoctorDetail() {
              <div className="mt-12 pt-12 border-t border-slate-200">
                 <h3 className="text-2xl font-bold text-slate-900 mb-8">Chuyên gia cùng chuyên khoa</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {relatedDoctors.map(d => (
+                    {relatedDoctors.map((d: any) => (
                         <DoctorCard key={d.id} doctor={d as any} className="border-slate-200 shadow-none hover:shadow-lg" />
                     ))}
                 </div>

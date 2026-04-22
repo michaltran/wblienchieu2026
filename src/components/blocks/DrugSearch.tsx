@@ -1,15 +1,19 @@
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { Input } from "../ui/Input";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { drugs, type Drug } from "../../data/drugs";
+import type { Drug } from "../../lib/api/hospital";
+import { usePublicDrugs } from "../../hooks/useHospital";
 import { cn } from "../../lib/cn";
 
 export default function DrugSearch() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Drug[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  
+  // Use debounced search or just fetch dynamically
+  const { data, isLoading } = usePublicDrugs({ search: query, limit: 8 });
+  const results = data?.items || [];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -26,13 +30,8 @@ export default function DrugSearch() {
     setQuery(value);
     
     if (value.length > 1) {
-      const filtered = drugs.filter((d) => 
-        d.name.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 8); // Limit internal suggestion results
-      setResults(filtered);
       setIsOpen(true);
     } else {
-      setResults([]);
       setIsOpen(false);
     }
   };

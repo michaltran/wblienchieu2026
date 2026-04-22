@@ -1,4 +1,5 @@
-import { departments } from "../data/departments";
+// import { departments } from "../data/departments";
+const departments: any[] = [];
 
 export interface NavItem {
   key: string; // Translation key

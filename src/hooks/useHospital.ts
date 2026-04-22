@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { hospitalApi } from '../lib/api/hospital';
-import { ListParams } from '../lib/api/posts';
+import type { ListParams } from '../lib/api/posts';
 
 // DOCTORS
 export function usePublicDoctors(params?: ListParams) {

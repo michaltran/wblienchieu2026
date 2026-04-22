@@ -1,7 +1,7 @@
 import { ST } from "../../styles/specialtyTokens";
 import { ArrowRight, Stethoscope } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { Department } from "../../data/departments";
+import type { Department } from "../../lib/api/hospital";
 
 interface Props {
   dept: Department;

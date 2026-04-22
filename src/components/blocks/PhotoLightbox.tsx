@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
-import type { Photo } from "../../data/photos";
+import type { Media as Photo } from "../../lib/api/content";
 import { useI18n } from "../../i18n/I18nContext";
 
 interface PhotoLightboxProps {

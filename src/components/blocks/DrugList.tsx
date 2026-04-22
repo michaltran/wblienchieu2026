@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Drug } from "../../data/drugs";
+import type { Drug } from "../../lib/api/hospital";
 import { Pagination } from "../ui/Pagination";
 import { ArrowRight, Pill } from "lucide-react";
 
