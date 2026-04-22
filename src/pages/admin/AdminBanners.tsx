@@ -47,7 +47,7 @@ export default function AdminBanners() {
       </div>
 
       <div className="flex gap-2">
-        {POSITIONS.map((p) => (
+        {POSITIONS.map((p: { value: BannerPosition; label: string }) => (
           <button
             key={p.value}
             onClick={() => setPosition(p.value)}
@@ -105,7 +105,7 @@ export default function AdminBanners() {
         <BannerModal
           item={editing}
           onClose={() => setEditing(null)}
-          onChange={(p) => setEditing({ ...editing, ...p })}
+          onChange={(p: any) => setEditing({ ...editing, ...p })}
           onSave={handleSave}
           saving={save.isPending}
         />

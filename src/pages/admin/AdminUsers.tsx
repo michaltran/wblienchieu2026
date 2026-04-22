@@ -126,7 +126,7 @@ export default function AdminUsers() {
       {editing && (
         <UserModal
           user={editing}
-          onChange={(p) => setEditing({ ...editing, ...p })}
+          onChange={(p: any) => setEditing({ ...editing, ...p })}
           onClose={() => setEditing(null)}
           onSave={handleSave}
           saving={save.isPending}

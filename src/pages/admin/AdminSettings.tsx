@@ -85,7 +85,7 @@ export default function AdminSettings() {
                 key={s.key}
                 setting={s}
                 value={values[s.key]}
-                onChange={(v) => setValues({ ...values, [s.key]: v })}
+                onChange={(v: any) => setValues({ ...values, [s.key]: v })}
               />
             ))}
           </div>

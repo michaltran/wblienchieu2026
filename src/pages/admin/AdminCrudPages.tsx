@@ -146,9 +146,14 @@ export function AdminDepartments() {
           },
           {
             key: "block", header: "Khối",
-            render: (d: any) => ({
-              "lam-sang": "Lâm sàng", "can-lam-sang": "Cận lâm sàng", "hanh-chinh": "Hành chính",
-            }[d.block] || d.block),
+            render: (d: any) => {
+              const blockMap: Record<string, string> = {
+                "lam-sang": "Lâm sàng",
+                "can-lam-sang": "Cận lâm sàng",
+                "hanh-chinh": "Hành chính",
+              };
+              return blockMap[d.block] || d.block;
+            },
           },
           { key: "isActive", header: "Trạng thái", render: (d: any) => <Badge active={d.isActive} /> },
           {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 
 export interface Column<T> {
