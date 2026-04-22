@@ -14,10 +14,20 @@ export interface Post {
   coverUrl?: string;
   tags?: string[];
   categoryId?: string | null;
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   publishedAt?: string | null;
   createdAt: string;
   updatedAt: string;
   authorId?: string;
+  author?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
 }
 
 export interface ListParams {
