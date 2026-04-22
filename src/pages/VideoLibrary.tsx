@@ -1,12 +1,11 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Search, PlayCircle, X } from "lucide-react";
-import { videos } from "../data/videos";
-import type { VideoCategory } from "../data/videos";
+import { Search, PlayCircle, X, Loader2 } from "lucide-react";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import { cn } from "../lib/cn";
+import { usePublicMedia } from "../hooks/useContent";
 
-const categories: (VideoCategory | "Tất cả")[] = [
+const categories = [
   "Tất cả",
   "Nội khoa",
   "Ngoại Khoa",
@@ -16,7 +15,7 @@ const categories: (VideoCategory | "Tất cả")[] = [
   "Dự phòng Truyền nhiễm"
 ];
 
-const categoryColors: Record<VideoCategory, string> = {
+const categoryColors: Record<string, string> = {
   "Nội khoa": "bg-blue-50 text-blue-700",
   "Ngoại Khoa": "bg-emerald-50 text-emerald-700",
   "Chăm sóc sức khỏe sinh sản": "bg-pink-50 text-pink-700",
@@ -27,36 +26,39 @@ const categoryColors: Record<VideoCategory, string> = {
 
 export default function VideoLibrary() {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<VideoCategory | "Tất cả">("Tất cả");
+  const [activeCategory, setActiveCategory] = useState("Tất cả");
   const [sort, setSort] = useState<"newest" | "oldest" | "az">("newest");
 
+  const { data, isLoading } = usePublicMedia({ limit: 500, type: 'video' });
+  const fetchedVideos = data?.items || [];
+
   const filteredVideos = useMemo(() => {
-    let result = videos;
+    let result = fetchedVideos;
 
     // Filter by Category
     if (activeCategory !== "Tất cả") {
-      result = result.filter(v => v.category === activeCategory);
+      result = result.filter((v: any) => v.album?.name === activeCategory || v.tags?.includes(activeCategory));
     }
 
     // Filter by Search
     if (search.trim()) {
       const q = search.toLowerCase();
-      result = result.filter(v => 
-        v.title.toLowerCase().includes(q) || 
-        v.description.toLowerCase().includes(q)
+      result = result.filter((v: any) => 
+        v.title?.toLowerCase().includes(q) || 
+        v.description?.toLowerCase().includes(q)
       );
     }
 
     // Sort
-    result = [...result].sort((a, b) => {
-        if (sort === "newest") return new Date(b.date).getTime() - new Date(a.date).getTime();
-        if (sort === "oldest") return new Date(a.date).getTime() - new Date(b.date).getTime();
-        if (sort === "az") return a.title.localeCompare(b.title);
+    result = [...result].sort((a: any, b: any) => {
+        if (sort === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        if (sort === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        if (sort === "az") return (a.title || "").localeCompare(b.title || "");
         return 0;
     });
 
     return result;
-  }, [videos, activeCategory, search, sort]);
+  }, [fetchedVideos, activeCategory, search, sort]);
 
   const clearFilters = () => {
       setSearch("");
@@ -150,9 +152,13 @@ export default function VideoLibrary() {
         </div>
 
         {/* Grid */}
-        {filteredVideos.length > 0 ? (
+        {isLoading ? (
+             <div className="py-20 flex justify-center">
+                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
+             </div>
+        ) : filteredVideos.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredVideos.map((video) => (
+                {filteredVideos.map((video: any) => (
                     <div key={video.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all group">
                         {/* Thumbnail */}
                         <div className="relative aspect-video bg-slate-200 group-hover:opacity-90 transition-opacity">
@@ -181,11 +187,13 @@ export default function VideoLibrary() {
                         
                         {/* Content */}
                         <div className="p-6">
-                            <div className="flex gap-2 mb-3">
-                                <span className={cn("text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide", categoryColors[video.category])}>
-                                    {video.category}
-                                </span>
-                            </div>
+                            {video.album && (
+                                <div className="flex gap-2 mb-3">
+                                    <span className={cn("text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide", categoryColors[video.album.name] || "bg-slate-100 text-slate-700")}>
+                                        {video.album.name}
+                                    </span>
+                                </div>
+                            )}
                             
                             <h3 className="font-bold text-slate-900 text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                                 <a href={video.youtubeId ? `https://www.youtube.com/watch?v=${video.youtubeId}` : "#"} target="_blank" rel="noreferrer">
@@ -198,9 +206,7 @@ export default function VideoLibrary() {
                             </p>
                             
                             <div className="flex items-center text-xs text-slate-400">
-                                <span>{new Date(video.date).toLocaleDateString("vi-VN")}</span>
-                                <span className="mx-2">•</span>
-                                <span>{video.views?.toLocaleString()} lượt xem</span>
+                                <span>{new Date(video.createdAt).toLocaleDateString("vi-VN")}</span>
                             </div>
                         </div>
                     </div>

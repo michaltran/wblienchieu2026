@@ -1,4 +1,4 @@
-import type { Doctor } from "../../data/doctors";
+import type { Doctor } from "../../lib/api/hospital";
 import { User, Briefcase, GraduationCap, BookOpen, Clock, Stethoscope } from "lucide-react";
 
 interface DoctorProfileSectionsProps {
@@ -22,18 +22,20 @@ export default function DoctorProfileSections({ doctor }: DoctorProfileSectionsP
     <div className="py-8">
       {/* Overview */}
       <Card title="Tổng quan" icon={User} id="overview">
-         <p className="text-slate-600 leading-relaxed mb-4">{doctor.bio}</p>
+         <div className="text-slate-600 leading-relaxed mb-4 prose max-w-none" dangerouslySetInnerHTML={{ __html: doctor.bio || 'Chưa có thông tin tổng quan.' }} />
          <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-            <div className="flex gap-2">
-                <span className="font-semibold text-slate-900">Ngôn ngữ:</span>
-                <span className="text-slate-600">{doctor.languages.join(", ")}</span>
-            </div>
-            {doctor.experienceYears > 0 && (
+            {(doctor.languages && doctor.languages.length > 0) && (
+              <div className="flex gap-2">
+                  <span className="font-semibold text-slate-900">Ngôn ngữ:</span>
+                  <span className="text-slate-600">{doctor.languages.join(", ")}</span>
+              </div>
+            )}
+            {(doctor.experienceYears && doctor.experienceYears > 0) ? (
                 <div className="flex gap-2">
                     <span className="font-semibold text-slate-900">Kinh nghiệm:</span>
                     <span className="text-slate-600">{doctor.experienceYears} năm</span>
                 </div>
-            )}
+            ) : null}
          </div>
       </Card>
 
@@ -98,7 +100,7 @@ export default function DoctorProfileSections({ doctor }: DoctorProfileSectionsP
       {/* Schedule */}
        <Card title="Lịch khám tại trung tâm" icon={Clock} id="schedule">
          <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 text-orange-800 text-sm font-medium inline-block">
-            {doctor.scheduleNote}
+            {doctor.scheduleNote || 'Lịch khám linh hoạt theo tuần, vui lòng liên hệ trực tiếp tổng đài để được tư vấn giờ khám chính xác nhất.'}
          </div>
          <p className="mt-4 text-sm text-slate-500 italic">
             * Lịch khám có thể thay đổi đột xuất. Vui lòng đặt lịch trước hoặc gọi tổng đài để xác nhận.

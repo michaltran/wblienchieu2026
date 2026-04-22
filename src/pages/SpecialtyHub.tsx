@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
-import { departments } from "../data/departments";
-import type { DepartmentBlock, Department } from "../data/departments";
+import type { Department } from "../lib/api/hospital";
 import { useI18n } from "../i18n/I18nContext";
 import { useState, useMemo } from "react";
 import SpecialtiesHero from "../components/blocks/SpecialtiesHero";
@@ -8,6 +7,8 @@ import SpecialtiesToolbar from "../components/blocks/SpecialtiesToolbar";
 import DepartmentCardPremium from "../components/blocks/DepartmentCardPremium";
 import { ST } from "../styles/specialtyTokens";
 import Breadcrumb from "../components/ui/Breadcrumb";
+import { usePublicDepartments } from "../hooks/useHospital";
+import { Loader2 } from "lucide-react";
 
 const BLOCK_TITLES: Record<string, string> = {
   "lam-sang": "Khối Lâm sàng",
@@ -24,8 +25,10 @@ const BLOCK_DESCRIPTIONS: Record<string, string> = {
 export default function SpecialtyHub() {
   const { block } = useParams<{ block: string }>();
   const { t } = useI18n();
+  const { data, isLoading } = usePublicDepartments({ limit: 100 });
+  const departments = data?.items || [];
   
-  const currentBlock = block as DepartmentBlock;
+  const currentBlock = block as string;
   const title = BLOCK_TITLES[currentBlock] || "Chuyên khoa";
   const description = BLOCK_DESCRIPTIONS[currentBlock] || "";
 
@@ -39,7 +42,10 @@ export default function SpecialtyHub() {
       
       if (search) {
           const lower = search.toLowerCase();
-          result = result.filter(d => d.name.toLowerCase().includes(lower) || d.missionText.toLowerCase().includes(lower));
+          result = result.filter(d => 
+              d.name.toLowerCase().includes(lower) || 
+              (d.missionText && d.missionText.toLowerCase().includes(lower))
+          );
       }
 
       if (sortMode === 'az') {
@@ -47,7 +53,7 @@ export default function SpecialtyHub() {
       }
 
       return result;
-  }, [currentBlock, search, sortMode]);
+  }, [departments, currentBlock, search, sortMode]);
 
   // Fallback for invalid block
   if (!BLOCK_TITLES[currentBlock]) {
@@ -91,10 +97,14 @@ export default function SpecialtyHub() {
 
       {/* Results Grid */}
       <div className={ST.container}>
-         {resultCount > 0 ? (
+         {isLoading ? (
+            <div className="py-20 flex justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+         ) : resultCount > 0 ? (
              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {filteredDepartments.map(dept => (
-                    <DepartmentCardPremium key={dept.id} dept={dept} />
+                    <DepartmentCardPremium key={dept.id} dept={dept as any} />
                 ))}
              </div>
          ) : (

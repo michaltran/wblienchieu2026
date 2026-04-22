@@ -47,7 +47,7 @@ export default function DoctorProfileHero({ doctor }: DoctorProfileHeroProps) {
                )}
 
                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  {doctor.tags.map(tag => (
+                  {(doctor.tags || []).map(tag => (
                       <span key={tag} className="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
                           #{tag}
                       </span>
@@ -57,7 +57,7 @@ export default function DoctorProfileHero({ doctor }: DoctorProfileHeroProps) {
           </div>
 
           <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed md:ml-48">
-              <p>{doctor.bio}</p>
+              <div dangerouslySetInnerHTML={{ __html: doctor.bio || '' }} />
           </div>
         </div>
 

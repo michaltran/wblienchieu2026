@@ -1,20 +1,26 @@
 import { useState, useMemo } from "react";
-import { albums, allPhotos } from "../data/photos";
-import type { Photo } from "../data/photos";
 import PhotoHero from "../components/blocks/PhotoHero";
 import AlbumStrip from "../components/blocks/AlbumStrip";
 import PhotoToolbar from "../components/blocks/PhotoToolbar";
 import PhotoMasonry from "../components/blocks/PhotoMasonry";
 import PhotoLightbox from "../components/blocks/PhotoLightbox";
 import { Button } from "../components/ui/Button";
-import { Phone, Calendar } from "lucide-react";
+import { Phone, Calendar, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { usePublicAlbums, usePublicMedia } from "../hooks/useContent";
 
 export default function PhotoLibrary() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'az'>('newest');
   
+  // API Data
+  const { data: albumsData } = usePublicAlbums({ limit: 100 });
+  const { data: mediaData, isLoading: isLoadingMedia } = usePublicMedia({ limit: 500, type: 'image' });
+
+  const albums = albumsData?.items || [];
+  const allPhotos = mediaData?.items || [];
+
   // Lightbox State
   const [lightboxPhotoIndex, setLightboxPhotoIndex] = useState<number | null>(null);
 
@@ -22,25 +28,26 @@ export default function PhotoLibrary() {
   const filteredPhotos = useMemo(() => {
     let result = selectedAlbumId === 'all' 
         ? allPhotos 
-        : allPhotos.filter(p => p.albumId === selectedAlbumId);
+        : allPhotos.filter((p: any) => p.albumId === selectedAlbumId || String(p.albumId) === String(selectedAlbumId));
     
     // Search
     if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        result = result.filter(p => 
-            p.title.toLowerCase().includes(q) || 
-            p.tags?.some(tag => tag.toLowerCase().includes(q))
+        result = result.filter((p: any) => 
+            p.title?.toLowerCase().includes(q) || 
+            p.tags?.some((tag: string) => tag.toLowerCase().includes(q)) ||
+            p.description?.toLowerCase().includes(q)
         );
     }
     
     // Sort
-    return result.sort((a, b) => {
-        if (sortOrder === 'newest') return (b.takenAt || '').localeCompare(a.takenAt || '') || b.id.localeCompare(a.id);
-        if (sortOrder === 'oldest') return (a.takenAt || '').localeCompare(b.takenAt || '') || a.id.localeCompare(b.id);
-        if (sortOrder === 'az') return a.title.localeCompare(b.title);
+    return result.sort((a: any, b: any) => {
+        if (sortOrder === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        if (sortOrder === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        if (sortOrder === 'az') return (a.title || '').localeCompare(b.title || '');
         return 0;
     });
-  }, [selectedAlbumId, searchQuery, sortOrder]);
+  }, [allPhotos, selectedAlbumId, searchQuery, sortOrder]);
 
   // Lightbox handlers
   const currentLightboxPhoto = lightboxPhotoIndex !== null ? filteredPhotos[lightboxPhotoIndex] : null;
@@ -64,14 +71,16 @@ export default function PhotoLibrary() {
             photoCount={allPhotos.length} 
        />
        
-       <AlbumStrip 
-            albums={albums}
-            selectedAlbumId={selectedAlbumId}
-            onSelectAlbum={(id) => {
-                setSelectedAlbumId(id);
-                setSearchQuery(""); // Reset search on album change optional
-            }}
-       />
+       {albums.length > 0 && (
+         <AlbumStrip 
+              albums={albums}
+              selectedAlbumId={selectedAlbumId}
+              onSelectAlbum={(id) => {
+                  setSelectedAlbumId(id);
+                  setSearchQuery(""); // Reset search on album change optional
+              }}
+         />
+       )}
 
        <PhotoToolbar 
             searchQuery={searchQuery}
@@ -80,10 +89,16 @@ export default function PhotoLibrary() {
             setSortOrder={setSortOrder}
        />
 
-       <PhotoMasonry 
-            photos={filteredPhotos}
-            onPhotoClick={(_, index) => setLightboxPhotoIndex(index)}
-       />
+       {isLoadingMedia ? (
+          <div className="py-20 flex justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+       ) : (
+          <PhotoMasonry 
+               photos={filteredPhotos}
+               onPhotoClick={(_, index) => setLightboxPhotoIndex(index)}
+          />
+       )}
 
        {/* Load More Mock */}
        {filteredPhotos.length > 0 && (

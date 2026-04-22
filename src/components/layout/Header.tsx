@@ -6,12 +6,19 @@ import { useI18n } from "../../i18n/I18nContext";
 import { cn } from "../../lib/cn";
 import { mainNavConfig } from "../../config/nav";
 import type { NavItem } from "../../config/nav";
+import { usePublicSettings } from "../../hooks/useContent";
 
 export default function Header() {
   const { t, lang, setLang } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLangOpen, setIsLangOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { data: settings } = usePublicSettings();
+  const phone = settings?.site_phone || "0905453677";
+  const email = settings?.site_email || "trungtamytelienchieu@danang.gov.vn";
+  const siteName = settings?.site_name || "Trung tâm Y tế Khu vực Liên Chiểu";
+  const siteSlogan = settings?.site_slogan || "Y tế gần dân, Ân cần chăm sóc";
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,13 +33,13 @@ export default function Header() {
       <div className="bg-[#1E73BE] text-white text-sm py-2">
         <div className="container flex justify-between items-center">
           <div className="flex gap-4">
-            <a href="tel:0905453677" className="flex items-center gap-2 hover:text-white/90">
+            <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-white/90">
               <Phone className="w-4 h-4" />
-              <span>0905453677</span>
+              <span>{phone}</span>
             </a>
-            <a href="mailto:trungtamytelienchieu@danang.gov.vn" className="items-center gap-2 hover:text-white/90 hidden sm:flex">
+            <a href={`mailto:${email}`} className="items-center gap-2 hover:text-white/90 hidden sm:flex">
               <Mail className="w-4 h-4" />
-              <span>trungtamytelienchieu@danang.gov.vn</span>
+              <span>{email}</span>
             </a>
           </div>
           <div className="hidden md:flex gap-4">
@@ -52,15 +59,14 @@ export default function Header() {
             <img src={logo} alt="Logo" className="w-10 h-10 md:w-12 md:h-12 object-contain group-hover:scale-105 transition-transform" />
             <div className="flex flex-col">
                <h1 className="text-sm md:text-lg font-black text-[#1E73BE] uppercase leading-tight md:leading-none max-w-[200px] md:max-w-none">
-                 Trung tâm Y tế Khu vực Liên Chiểu
+                 {siteName}
                </h1>
                <span className="text-[10px] md:text-xs text-slate-500 font-medium tracking-wide">
-                 Y tế gần dân, Ân cần chăm sóc
+                 {siteSlogan}
                </span>
             </div>
           </Link>
 
-          {/* Desktop Nav */}
           {/* Desktop Nav */}
           <nav className="hidden xl:flex items-center gap-6 font-medium text-slate-700 text-sm">
             {mainNavConfig.map((item) => (

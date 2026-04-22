@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { departments } from "../data/departments";
 import { useI18n } from "../i18n/I18nContext";
+import { usePublicDepartmentBySlug } from "../hooks/useHospital";
+import { Loader2 } from "lucide-react";
 
 // Premium Blocks
 import DeptHeroPremium from "../components/blocks/DeptHeroPremium";
@@ -14,9 +15,17 @@ import { ST } from "../styles/specialtyTokens";
 export default function DepartmentDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { } = useI18n(); // No nav_home check needed here as breadcrumb is inside Hero
-  const dept = departments.find(d => d.slug === slug);
+  const { data: dept, isLoading, error } = usePublicDepartmentBySlug(slug);
 
-  if (!dept) {
+  if (isLoading) {
+     return (
+        <div className="min-h-screen flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+     );
+  }
+
+  if (error || !dept) {
      return <div className="min-h-screen flex items-center justify-center text-slate-500">Không tìm thấy khoa/phòng này.</div>;
   }
 
@@ -24,7 +33,7 @@ export default function DepartmentDetail() {
     <div className="bg-white min-h-screen pb-20">
        
        {/* 1. Premium Hero */}
-       <DeptHeroPremium dept={dept} />
+       <DeptHeroPremium dept={dept as any} />
 
        {/* 2. Sticky Section Nav */}
        <DeptSectionNav />
@@ -33,22 +42,22 @@ export default function DepartmentDetail() {
        <div className={`${ST.container} py-12 md:py-16 space-y-20`}>
            
            {/* Section 1: Co cau to chuc (Structures) */}
-           <DeptLeadershipPremium dept={dept} />
+           <DeptLeadershipPremium dept={dept as any} />
 
            <div className="h-px bg-slate-100" />
 
            {/* Section 2: Chuc nang nhiem vu (Mission/Duties) */}
-           <DeptMissionDutiesPremium dept={dept} />
+           <DeptMissionDutiesPremium dept={dept as any} />
 
            <div className="h-px bg-slate-100" />
 
            {/* Section 3: Thong tin (Info & Services) */}
-           <DeptInfoTilesPremium dept={dept} />
+           <DeptInfoTilesPremium dept={dept as any} />
 
            <div className="h-px bg-slate-100" />
            
            {/* Section 4: Hoat dong (Highlights) */}
-           <DeptHighlightsPremium dept={dept} />
+           <DeptHighlightsPremium dept={dept as any} />
 
            {/* CTA Strip */}
            <div className="bg-gradient-to-r from-[#1E73BE] to-indigo-600 rounded-3xl p-8 md:p-12 text-center text-white shadow-xl relative overflow-hidden">

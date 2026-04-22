@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { drugs } from "../data/drugs";
 import AlphabetFilter from "../components/blocks/AlphabetFilter";
 import DrugSearch from "../components/blocks/DrugSearch";
 import DrugList from "../components/blocks/DrugList";
 import Breadcrumb from "../components/ui/Breadcrumb";
+import { usePublicDrugs } from "../hooks/useHospital";
+import { Loader2 } from "lucide-react";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -16,23 +17,31 @@ export default function Drugs() {
   const searchQuery = searchParams.get("q") || "";
   const currentPage = parseInt(searchParams.get("page") || "1");
 
+  const { data, isLoading } = usePublicDrugs({ limit: 500 });
+  const fetchedDrugs = data?.items || [];
+
   // Filtering Logic
   const filteredDrugs = useMemo(() => {
-    return drugs.filter((drug) => {
-      const matchLetter = activeLetter ? drug.letter === activeLetter : true;
+    return fetchedDrugs.filter((drug: any) => {
+      const firstLetter = drug.name.charAt(0).toUpperCase();
+      const matchLetter = activeLetter ? firstLetter === activeLetter : true;
       const matchSearch = searchQuery 
-         ? drug.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+         ? drug.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+           (drug.activeIngredient && drug.activeIngredient.toLowerCase().includes(searchQuery.toLowerCase()))
          : true;
       return matchLetter && matchSearch;
     });
-  }, [activeLetter, searchQuery]);
+  }, [fetchedDrugs, activeLetter, searchQuery]);
 
   // Pagination Logic
   const totalPages = Math.ceil(filteredDrugs.length / ITEMS_PER_PAGE);
   const currentDrugs = filteredDrugs.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
-  );
+  ).map((d: any) => ({
+      ...d,
+      letter: d.name.charAt(0).toUpperCase()
+  }));
 
   // Handlers
   const handleLetterSelect = (letter: string | undefined) => {
@@ -106,12 +115,18 @@ export default function Drugs() {
                  </span>
                </div>
                
-               <DrugList 
-                 drugs={currentDrugs}
-                 currentPage={currentPage}
-                 totalPages={totalPages}
-                 onPageChange={handlePageChange}
-               />
+               {isLoading ? (
+                  <div className="py-20 flex justify-center">
+                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+               ) : (
+                 <DrugList 
+                   drugs={currentDrugs}
+                   currentPage={currentPage}
+                   totalPages={totalPages}
+                   onPageChange={handlePageChange}
+                 />
+               )}
             </div>
          </div>
       </div>

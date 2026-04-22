@@ -1,78 +1,59 @@
-import { createCrudApi } from './common';
+import { http } from './http';
+import { ListParams, PaginatedResponse } from './posts'; // Re-use the pagination types
 
-// ========== DEPARTMENTS ==========
-export type DepartmentBlock = 'lam-sang' | 'can-lam-sang' | 'hanh-chinh';
-export interface DepartmentLeader { name: string; title: string; }
-export interface DepartmentHighlight { title: string; image: string; }
-export interface DepartmentInfo {
-  phone?: string;
-  email?: string;
-  workingHours?: string;
-  location?: string;
-  services?: string[];
-}
-export interface Department {
-  id: string;
-  name: string;
-  slug: string;
-  block: DepartmentBlock;
-  leaders?: DepartmentLeader[];
-  teamImage?: string;
-  teamImagePublicId?: string;
-  missionText?: string;
-  duties?: string[];
-  info?: DepartmentInfo;
-  highlights?: DepartmentHighlight[];
-  orderIndex: number;
-  isActive: boolean;
-}
-export const departmentsApi = createCrudApi<Department>('/api/departments');
-
-// ========== DOCTORS ==========
 export interface Doctor {
   id: string;
-  slug: string;
   name: string;
+  slug: string;
   title?: string;
   specialty?: string;
   specialtyId?: string;
-  departmentId?: string | null;
+  departmentId?: string;
   experienceYears?: number;
   languages?: string[];
   avatar?: string;
-  avatarPublicId?: string;
   bio?: string;
   tags?: string[];
   scheduleNote?: string;
   featured?: boolean;
-  expertise?: string[];
-  experience?: string[];
-  education?: string[];
-  publications?: string[];
-  department?: { id: string; name: string; slug: string; block: string };
+  externalId?: string;
+  facility?: string;
+  expertise?: any[];
+  experience?: any[];
+  education?: any[];
+  publications?: any[];
 }
-export const doctorsApi = createCrudApi<Doctor>('/api/doctors');
 
-// ========== SERVICES ==========
+export interface Department {
+  id: string;
+  name: string;
+  slug: string;
+  block?: 'lam-sang' | 'can-lam-sang' | 'hanh-chinh' | string;
+  leaders?: any[];
+  teamImage?: string;
+  missionText?: string;
+  duties?: string[];
+  info?: any;
+  highlights?: any[];
+}
+
 export interface Service {
   id: string;
-  title: string;
-  slug?: string;
+  name: string;
+  slug: string;
   description?: string;
-  icon?: string;
+  content?: string;
   image?: string;
-  imagePublicId?: string;
-  category?: string;
-  orderIndex: number;
-  isActive: boolean;
+  icon?: string;
+  price?: number;
+  departmentId?: string;
+  isFeatured?: boolean;
 }
-export const servicesApi = createCrudApi<Service>('/api/services');
 
-// ========== DRUGS ==========
 export interface Drug {
   id: string;
-  slug: string;
   name: string;
+  slug: string;
   activeIngredient?: string;
   dosageForm?: string;
   strength?: string;
@@ -89,6 +70,46 @@ export interface Drug {
   price?: number;
   isBHYT?: boolean;
   category?: string;
-  isActive: boolean;
 }
-export const drugsApi = createCrudApi<Drug>('/api/drugs');
+
+export const hospitalApi = {
+  // Doctors
+  publicListDoctors: async (params?: ListParams): Promise<PaginatedResponse<Doctor>> => {
+    const response = await http.get('/api/hospital/doctors/public', { params });
+    return response.data;
+  },
+  publicGetDoctorBySlug: async (slug: string): Promise<Doctor> => {
+    const response = await http.get(`/api/hospital/doctors/public/${slug}`);
+    return response.data;
+  },
+
+  // Departments
+  publicListDepartments: async (params?: ListParams): Promise<PaginatedResponse<Department>> => {
+    const response = await http.get('/api/hospital/departments/public', { params });
+    return response.data;
+  },
+  publicGetDepartmentBySlug: async (slug: string): Promise<Department> => {
+    const response = await http.get(`/api/hospital/departments/public/${slug}`);
+    return response.data;
+  },
+
+  // Services
+  publicListServices: async (params?: ListParams): Promise<PaginatedResponse<Service>> => {
+    const response = await http.get('/api/hospital/services/public', { params });
+    return response.data;
+  },
+  publicGetServiceBySlug: async (slug: string): Promise<Service> => {
+    const response = await http.get(`/api/hospital/services/public/${slug}`);
+    return response.data;
+  },
+
+  // Drugs
+  publicListDrugs: async (params?: ListParams): Promise<PaginatedResponse<Drug>> => {
+    const response = await http.get('/api/hospital/drugs/public', { params });
+    return response.data;
+  },
+  publicGetDrugBySlug: async (slug: string): Promise<Drug> => {
+    const response = await http.get(`/api/hospital/drugs/public/${slug}`);
+    return response.data;
+  },
+};

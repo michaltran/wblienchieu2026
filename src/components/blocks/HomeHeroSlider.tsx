@@ -3,28 +3,38 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, CalendarCheck, Info } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useI18n } from "../../i18n/I18nContext";
+import { usePublicBanners } from "../../hooks/useContent";
 
-// Import banners
+// Import fallback banners
 import banner1 from "../../assets/banners/banner-01.svg";
 import banner2 from "../../assets/banners/banner-02.svg";
 import banner3 from "../../assets/banners/banner-03.svg";
 import banner4 from "../../assets/banners/banner-04.svg";
 import banner5 from "../../assets/banners/banner-05.svg";
 
-const banners = [banner1, banner2, banner3, banner4, banner5];
+const fallbackBanners = [
+  { desktopImage: banner1, title: 'Banner 1' },
+  { desktopImage: banner2, title: 'Banner 2' },
+  { desktopImage: banner3, title: 'Banner 3' },
+  { desktopImage: banner4, title: 'Banner 4' },
+  { desktopImage: banner5, title: 'Banner 5' }
+];
 
 export default function HomeHeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useI18n();
+  const { data: apiBanners } = usePublicBanners('home_hero');
+
+  const banners = apiBanners && apiBanners.length > 0 ? apiBanners : fallbackBanners;
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || banners.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, banners.length]);
 
   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % banners.length);
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
@@ -40,9 +50,10 @@ export default function HomeHeroSlider() {
         className="flex w-full h-full transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {banners.map((src, index) => (
+        {banners.map((banner, index) => (
           <div key={index} className="w-full h-full flex-shrink-0 relative">
-             <img src={src} alt={`Banner ${index + 1}`} className="w-full h-full object-cover" />
+             <img src={banner.desktopImage} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover hidden md:block" />
+             <img src={banner.mobileImage || banner.desktopImage} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover md:hidden" />
              {/* Gradient Overlay for Text Readability */}
              <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent" />
           </div>
@@ -80,32 +91,38 @@ export default function HomeHeroSlider() {
       </div>
 
       {/* Controls */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/80 hover:bg-white text-slate-800 shadow-md opacity-0 group-hover:opacity-100 transition-all hidden md:block"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/80 hover:bg-white text-slate-800 shadow-md opacity-0 group-hover:opacity-100 transition-all hidden md:block"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
+      {banners.length > 1 && (
+        <>
+          <button 
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/80 hover:bg-white text-slate-800 shadow-md opacity-0 group-hover:opacity-100 transition-all hidden md:block"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button 
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/80 hover:bg-white text-slate-800 shadow-md opacity-0 group-hover:opacity-100 transition-all hidden md:block"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </>
+      )}
 
       {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {banners.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              currentIndex === idx ? "bg-[#1E73BE] w-8" : "bg-slate-300 hover:bg-[#1E73BE]/50"
-            }`}
-          />
-        ))}
-      </div>
+      {banners.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          {banners.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                currentIndex === idx ? "bg-[#1E73BE] w-8" : "bg-slate-300 hover:bg-[#1E73BE]/50"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

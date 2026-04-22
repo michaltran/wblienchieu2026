@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Search, MapPin, Phone } from "lucide-react";
-import { doctors } from "../data/doctors";
+import { Search, MapPin, Phone, Loader2 } from "lucide-react";
 import DoctorCard from "../components/blocks/DoctorCard";
 import DoctorFilters, { type FilterState } from "../components/blocks/DoctorFilters";
 import { Pagination } from "../components/ui/Pagination";
 import { Button } from "../components/ui/Button";
+import { usePublicDoctors } from "../hooks/useHospital";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -17,31 +17,35 @@ export default function Doctors() {
     search: "",
   });
 
+  const { data, isLoading } = usePublicDoctors({ limit: 200 });
+  const fetchedDoctors = data?.items || [];
+
   // Filter Logic
   const filteredDoctors = useMemo(() => {
-    return doctors.filter((doc) => {
+    return fetchedDoctors.filter((doc: any) => {
       // Search
       if (filters.search) {
         const query = filters.search.toLowerCase();
         const matchName = doc.name.toLowerCase().includes(query);
-        const matchSpecialty = doc.specialty.toLowerCase().includes(query);
-        const matchTags = doc.tags.some(tag => tag.toLowerCase().includes(query));
+        const matchSpecialty = doc.specialty?.toLowerCase().includes(query);
+        const matchTags = (doc.tags || []).some((tag: string) => tag.toLowerCase().includes(query));
         if (!matchName && !matchSpecialty && !matchTags) return false;
       }
 
       // Specialty
       if (filters.specialty.length > 0) {
-        if (!filters.specialty.includes(doc.specialty)) return false;
+        if (!doc.specialty || !filters.specialty.includes(doc.specialty)) return false;
       }
 
       // Department
       if (filters.department.length > 0) {
-        if (!filters.department.includes(doc.department || "")) return false;
+        const deptName = doc.department?.name || "";
+        if (!filters.department.includes(deptName)) return false;
       }
 
       return true;
     });
-  }, [filters]);
+  }, [fetchedDoctors, filters]);
 
   // Pagination Logic
   const totalPages = Math.ceil(filteredDoctors.length / ITEMS_PER_PAGE);
@@ -115,7 +119,11 @@ export default function Doctors() {
 
             {/* Grid */}
             <div className="flex-1">
-               {currentDoctors.length > 0 ? (
+               {isLoading ? (
+                  <div className="flex justify-center py-20">
+                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  </div>
+               ) : currentDoctors.length > 0 ? (
                   <>
                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                         {currentDoctors.map(doctor => (

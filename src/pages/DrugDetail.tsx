@@ -1,20 +1,28 @@
 import { useParams, Link } from "react-router-dom";
-import { drugs } from "../data/drugs";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import { Button } from "../components/ui/Button";
 import { AlertTriangle, Phone, Loader2 } from "lucide-react";
 import { usePublicPosts } from "../hooks/usePosts";
+import { usePublicDrugBySlug } from "../hooks/useHospital";
 
 export default function DrugDetail() {
   const { slug } = useParams();
-  const drug = drugs.find((d) => d.slug === slug);
+  const { data: drug, isLoading, error } = usePublicDrugBySlug(slug);
 
   const { data: relatedData, isLoading: isLoadingPosts } = usePublicPosts({
     limit: 2,
   });
   const relatedPosts = relatedData?.items || [];
 
-  if (!drug) {
+  if (isLoading) {
+    return (
+      <div className="container py-20 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !drug) {
     return (
       <div className="container py-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Không tìm thấy thông tin thuốc</h2>
@@ -26,15 +34,15 @@ export default function DrugDetail() {
   }
 
   const sections = [
-    { id: "dang-bao-che", title: "Dạng bào chế - Biệt dược", content: drug.formBrand },
-    { id: "nhom-thuoc", title: "Nhóm thuốc - Tác dụng", content: drug.groupEffect },
-    { id: "chi-dinh", title: "Chỉ định", list: drug.indications },
-    { id: "chong-chi-dinh", title: "Chống chỉ định", list: drug.contraindications },
-    { id: "than-trong", title: "Thận trọng", list: drug.cautions },
-    { id: "tac-dung-phu", title: "Tác dụng không mong muốn", list: drug.adverseEffects },
-    { id: "lieu-dung", title: "Liều và cách dùng", list: drug.dosage },
-    { id: "chu-y", title: "Chú ý khi sử dụng", list: drug.notes },
-    { id: "tai-lieu", title: "Tài liệu tham khảo", list: drug.references },
+    { id: "hoat-chat", title: "Hoạt chất", content: drug.activeIngredient },
+    { id: "dang-bao-che", title: "Dạng bào chế", content: drug.dosageForm },
+    { id: "ham-luong", title: "Hàm lượng", content: drug.strength },
+    { id: "chi-dinh", title: "Chỉ định", content: drug.indication },
+    { id: "chong-chi-dinh", title: "Chống chỉ định", content: drug.contraindication },
+    { id: "lieu-dung", title: "Liều dùng", content: drug.dosage },
+    { id: "tac-dung-phu", title: "Tác dụng phụ", content: drug.sideEffects },
+    { id: "tuong-tac", title: "Tương tác thuốc", content: drug.interactions },
+    { id: "bao-quan", title: "Bảo quản", content: drug.storage },
   ];
 
   return (
@@ -50,8 +58,8 @@ export default function DrugDetail() {
 
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold text-xl">
-              {drug.letter}
+            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold text-xl uppercase">
+              {drug.name.charAt(0)}
             </span>
             <h1 className="text-3xl md:text-4xl font-black text-slate-900">{drug.name}</h1>
           </div>
@@ -64,8 +72,7 @@ export default function DrugDetail() {
                <h3 className="font-bold text-slate-900 mb-4 px-2">Mục lục</h3>
                <nav className="flex flex-col space-y-1">
                  {sections.map(section => {
-                   // Only show link if content exists
-                   if (!section.content && (!section.list || section.list.length === 0)) return null;
+                   if (!section.content) return null;
                    return (
                      <a 
                        key={section.id} 
@@ -84,24 +91,14 @@ export default function DrugDetail() {
           <div className="lg:col-span-3 space-y-8">
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
               {sections.map((section) => {
-                const hasContent = section.content || (section.list && section.list.length > 0);
-                if (!hasContent) return null;
+                if (!section.content) return null;
 
                 return (
                   <section key={section.id} id={section.id} className="mb-10 last:mb-0 scroll-mt-28">
                     <h3 className="text-xl font-bold text-primary mb-4 pb-2 border-b border-slate-100">
                       {section.title}
                     </h3>
-                    <div className="text-slate-700 leading-relaxed">
-                      {section.content && <p>{section.content}</p>}
-                      {section.list && (
-                        <ul className="list-disc pl-5 space-y-2">
-                          {section.list.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                    <div className="text-slate-700 leading-relaxed prose max-w-none" dangerouslySetInnerHTML={{ __html: section.content }} />
                   </section>
                 );
               })}
