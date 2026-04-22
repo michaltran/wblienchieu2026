@@ -10,7 +10,7 @@ export default function AdminAppointments() {
   const [selected, setSelected] = useState<any>(null);
 
   const { data, isLoading } = useAppointments({ page, limit: 20, search, status: status || undefined });
-  const confirm = useConfirmAppointment();
+  const confirmAppointment = useConfirmAppointment();
   const cancel = useCancelAppointment();
   const remove = useDeleteAppointment();
 
@@ -93,7 +93,7 @@ export default function AdminAppointments() {
                 {a.status === "pending" && (
                   <>
                     <button
-                      onClick={async () => await confirm.mutateAsync({ id: a.id })}
+                      onClick={async () => await confirmAppointment.mutateAsync({ id: a.id })}
                       className="p-1.5 hover:bg-green-50 rounded text-green-600" title="Duyệt"
                     >
                       <Check className="w-4 h-4" />
