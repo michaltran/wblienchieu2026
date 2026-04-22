@@ -10,6 +10,22 @@ export function usePosts(params: ListParams) {
   });
 }
 
+export function usePublicPosts(params: ListParams) {
+  return useQuery({
+    queryKey: ['publicPosts', params],
+    queryFn: () => postsApi.publicList(params),
+    placeholderData: (previousData) => previousData,
+  });
+}
+
+export function usePublicPostBySlug(slug: string | undefined) {
+  return useQuery({
+    queryKey: ['publicPost', slug],
+    queryFn: () => postsApi.publicGetBySlug(slug!),
+    enabled: !!slug,
+  });
+}
+
 export function useSavePost() {
   const queryClient = useQueryClient();
 

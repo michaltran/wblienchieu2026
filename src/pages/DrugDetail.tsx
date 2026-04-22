@@ -2,12 +2,17 @@ import { useParams, Link } from "react-router-dom";
 import { drugs } from "../data/drugs";
 import Breadcrumb from "../components/ui/Breadcrumb";
 import { Button } from "../components/ui/Button";
-import { AlertTriangle, Phone } from "lucide-react";
-import { posts } from "../data/posts";
+import { AlertTriangle, Phone, Loader2 } from "lucide-react";
+import { usePublicPosts } from "../hooks/usePosts";
 
 export default function DrugDetail() {
   const { slug } = useParams();
   const drug = drugs.find((d) => d.slug === slug);
+
+  const { data: relatedData, isLoading: isLoadingPosts } = usePublicPosts({
+    limit: 2,
+  });
+  const relatedPosts = relatedData?.items || [];
 
   if (!drug) {
     return (
@@ -121,17 +126,24 @@ export default function DrugDetail() {
             {/* Related Posts */}
             <div className="mt-12">
                <h3 className="text-xl font-bold text-slate-900 mb-6">Bài viết liên quan</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 {/* Mock related posts logic */}
-                 {posts.slice(0, 2).map(post => (
-                   <Link key={post.id} to={`/bai-viet/${post.slug}`} className="group bg-white p-5 rounded-2xl border border-slate-100 hover:shadow-md transition-all">
-                      <div className="text-xs text-primary font-bold mb-2 uppercase">{post.category}</div>
-                      <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-2">
-                        {post.title}
-                      </h4>
-                   </Link>
-                 ))}
-               </div>
+               {isLoadingPosts ? (
+                 <div className="flex justify-center py-4">
+                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                 </div>
+               ) : relatedPosts.length === 0 ? (
+                 <div className="text-sm text-slate-500 italic">Chưa có bài viết nào.</div>
+               ) : (
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   {relatedPosts.map((post: any) => (
+                     <Link key={post.id} to={`/bai-viet/${post.slug}`} className="group bg-white p-5 rounded-2xl border border-slate-100 hover:shadow-md transition-all">
+                        <div className="text-xs text-primary font-bold mb-2 uppercase">{post.category?.name || 'Tin tức'}</div>
+                        <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-2">
+                          {post.title}
+                        </h4>
+                     </Link>
+                   ))}
+                 </div>
+               )}
             </div>
           </div>
         </div>

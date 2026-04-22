@@ -2,26 +2,32 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ArticleSidebar from "../components/blocks/ArticleSidebar";
 import { Pagination } from "../components/ui/Pagination";
-import { posts } from "../data/posts";
-import { Calendar } from "lucide-react";
+import { usePublicPosts } from "../hooks/usePosts";
+import { Calendar, Loader2 } from "lucide-react";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 
+const categories = [
+  { name: "Tất cả", slug: "" },
+  { name: "Tin tức - Sự kiện", slug: "tin-tuc-su-kien" },
+  { name: "Y học thường thức", slug: "y-hoc-thuong-thuc" },
+  { name: "Đào tạo - NCKH", slug: "dao-tao-nckh" },
+];
+
 export default function Articles() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentCategory = searchParams.get("category") || "Tất cả";
+  const currentSlug = searchParams.get("category") || "";
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Filter logic
-  const filteredPosts = currentCategory === "Tất cả" 
-    ? posts 
-    : posts.filter(post => post.category === currentCategory);
+  const { data, isLoading, isError } = usePublicPosts({
+    page: currentPage,
+    limit: itemsPerPage,
+    ...(currentSlug ? { categorySlug: currentSlug } : {}),
+  });
 
-  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
-  
-  // Categories for tabs
-  const categories = ["Tất cả", "Tin tức", "Sức khỏe", "Hướng dẫn"];
+  const posts = data?.items || [];
+  const totalPages = data?.totalPages || 1;
 
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
@@ -43,57 +49,74 @@ export default function Articles() {
             <div className="flex flex-wrap gap-2 mb-8">
               {categories.map((cat) => (
                 <Button 
-                  key={cat}
-                  variant={currentCategory === cat ? "default" : "outline"}
-                  onClick={() => setSearchParams({ category: cat })}
+                  key={cat.name}
+                  variant={currentSlug === cat.slug ? "default" : "outline"}
+                  onClick={() => {
+                    setSearchParams(cat.slug ? { category: cat.slug } : {});
+                    setCurrentPage(1);
+                  }}
                   className="rounded-full"
                   size="sm"
                 >
-                  {cat}
+                  {cat.name}
                 </Button>
               ))}
             </div>
 
             {/* Posts List */}
-            <div className="grid gap-8">
-              {filteredPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((post) => (
-                <article key={post.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-all">
-                  <div className="w-full md:w-1/3 aspect-video bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm">
-                    [Ảnh {post.id}]
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge variant="secondary" className="text-primary bg-primary/5 hover:bg-primary/10">
-                        {post.category}
-                      </Badge>
-                      <span className="text-xs text-slate-500 flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" /> {post.date}
-                      </span>
+            {isLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : isError ? (
+              <div className="text-center py-20 text-red-500">
+                Có lỗi xảy ra khi tải bài viết.
+              </div>
+            ) : (
+              <div className="grid gap-8">
+                {posts.map((post: any) => (
+                  <article key={post.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-all">
+                    <div className="w-full md:w-1/3 aspect-video bg-slate-200 rounded-xl overflow-hidden flex items-center justify-center text-slate-400 text-sm">
+                      {post.coverUrl ? (
+                        <img src={post.coverUrl} alt={post.title} className="w-full h-full object-cover" />
+                      ) : (
+                        "[Ảnh minh hoạ]"
+                      )}
                     </div>
-                    <Link to={`/bai-viet/${post.slug}`}>
-                      <h2 className="text-xl font-bold text-slate-900 mb-3 hover:text-primary transition-colors">
-                        {post.title}
-                      </h2>
-                    </Link>
-                    <p className="text-slate-600 text-sm line-clamp-2 mb-4">
-                      {post.excerpt}
-                    </p>
-                    <Link to={`/bai-viet/${post.slug}`} className="text-sm font-medium text-primary hover:underline">
-                      Đọc tiếp
-                    </Link>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="secondary" className="text-primary bg-primary/5 hover:bg-primary/10">
+                          {post.category?.name || 'Chưa phân loại'}
+                        </Badge>
+                        <span className="text-xs text-slate-500 flex items-center">
+                          <Calendar className="w-3 h-3 mr-1" /> {new Date(post.publishedAt || post.createdAt).toLocaleDateString('vi-VN')}
+                        </span>
+                      </div>
+                      <Link to={`/bai-viet/${post.slug}`}>
+                        <h2 className="text-xl font-bold text-slate-900 mb-3 hover:text-primary transition-colors">
+                          {post.title}
+                        </h2>
+                      </Link>
+                      <p className="text-slate-600 text-sm line-clamp-2 mb-4">
+                        {post.excerpt}
+                      </p>
+                      <Link to={`/bai-viet/${post.slug}`} className="text-sm font-medium text-primary hover:underline">
+                        Đọc tiếp
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+                
+                {posts.length === 0 && (
+                  <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 italic text-slate-500">
+                    Không tìm thấy bài viết nào trong chuyên mục này.
                   </div>
-                </article>
-              ))}
-              
-              {filteredPosts.length === 0 && (
-                <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 italic text-slate-500">
-                  Không tìm thấy bài viết nào trong chuyên mục này.
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* Pagination */}
-            {filteredPosts.length > 0 && (
+            {posts.length > 0 && totalPages > 1 && (
               <div className="mt-12 flex justify-center">
                 <Pagination 
                   currentPage={currentPage}

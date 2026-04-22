@@ -27,6 +27,8 @@ export interface ListParams {
   status?: PostStatus;
   search?: string;
   tag?: string;
+  categoryId?: string;
+  categorySlug?: string;
 }
 
 export interface ListResponse<T> {
@@ -40,6 +42,16 @@ export interface ListResponse<T> {
 export const postsApi = {
   list: async (params: ListParams): Promise<ListResponse<Post>> => {
     const response = await http.get<ListResponse<Post>>('/api/posts', { params });
+    return response.data;
+  },
+
+  publicList: async (params: ListParams): Promise<ListResponse<Post>> => {
+    const response = await http.get<ListResponse<Post>>('/api/posts/public', { params });
+    return response.data;
+  },
+
+  publicGetBySlug: async (slug: string): Promise<Post> => {
+    const response = await http.get<Post>(`/api/posts/public/${slug}`);
     return response.data;
   },
 

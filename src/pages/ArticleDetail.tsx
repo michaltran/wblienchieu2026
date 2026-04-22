@@ -1,16 +1,30 @@
 import { useParams, Link } from "react-router-dom";
-import { posts } from "../data/posts";
+import { usePublicPostBySlug, usePublicPosts } from "../hooks/usePosts";
 import ArticleSidebar from "../components/blocks/ArticleSidebar";
 import Breadcrumb from "../components/ui/Breadcrumb";
-import { Calendar, Tag, ArrowLeft } from "lucide-react";
+import { Calendar, Tag, ArrowLeft, Loader2 } from "lucide-react";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 
 export default function ArticleDetail() {
   const { slug } = useParams();
-  const post = posts.find((p) => p.slug === slug);
+  const { data: post, isLoading, isError } = usePublicPostBySlug(slug);
 
-  if (!post) {
+  const { data: relatedData } = usePublicPosts({
+    limit: 3,
+    categoryId: post?.categoryId || undefined,
+  });
+  const relatedPosts = relatedData?.items?.filter(p => p.id !== post?.id).slice(0, 2) || [];
+
+  if (isLoading) {
+    return (
+      <div className="container py-20 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError || !post) {
     return (
       <div className="container py-20 text-center">
         <h2 className="text-2xl font-bold mb-4">Không tìm thấy bài viết</h2>
@@ -23,7 +37,7 @@ export default function ArticleDetail() {
 
   const breadcrumbs = [
     { label: "Bài viết", href: "/bai-viet" },
-    { label: post.category, href: `/bai-viet?category=${post.category}` },
+    { label: post.category?.name || "Chưa phân loại", href: `/bai-viet?category=${post.category?.slug || ""}` },
     { label: post.title },
   ];
 
@@ -38,7 +52,7 @@ export default function ArticleDetail() {
             <article className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-slate-100">
               <header className="mb-8 border-b border-slate-100 pb-8">
                 <div className="flex gap-2 mb-4">
-                  <Badge>{post.category}</Badge>
+                  <Badge>{post.category?.name || "Chưa phân loại"}</Badge>
                 </div>
                 <h1 className="text-3xl md:text-3xl font-bold text-slate-900 mb-4 leading-tight">
                   {post.title}
@@ -46,38 +60,22 @@ export default function ArticleDetail() {
                 <div className="flex items-center gap-4 text-sm text-slate-500">
                   <span className="flex items-center">
                     <Calendar className="w-4 h-4 mr-2" />
-                    {post.date}
+                    {new Date(post.publishedAt || post.createdAt).toLocaleDateString('vi-VN')}
                   </span>
-                  <span className="flex items-center">
-                    <Tag className="w-4 h-4 mr-2" />
-                    {post.category}
-                  </span>
+                  {post.tags && post.tags.length > 0 && (
+                    <span className="flex items-center">
+                      <Tag className="w-4 h-4 mr-2" />
+                      {post.tags.join(", ")}
+                    </span>
+                  )}
                 </div>
               </header>
 
               <div className="prose prose-slate max-w-none mb-10 text-slate-700">
-                <p className="lead font-medium text-lg text-slate-900 mb-6">{post.excerpt}</p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <div className="my-8 p-6 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-                  <h4 className="font-bold text-slate-900 mb-2 font-sans text-lg">Tóm tắt nhanh</h4>
-                  <p className="m-0 text-sm">
-                    Đây là nội dung tóm tắt quan trọng mà người đọc cần ghi nhớ. Box callout này giúp làm nổi bật thông tin chính.
-                  </p>
-                </div>
-                <h3>Nội dung chính</h3>
-                <p>
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-                <ul>
-                  <li>Điểm quan trọng thứ nhất cần lưu ý.</li>
-                  <li>Điểm quan trọng thứ hai cần lưu ý.</li>
-                  <li>Điểm quan trọng thứ ba cần lưu ý.</li>
-                </ul>
-                <p>
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-                </p>
+                {post.excerpt && <p className="lead font-medium text-lg text-slate-900 mb-6">{post.excerpt}</p>}
+                
+                {/* DANGEROUSLY SET HTML FOR REAL CONTENT */}
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
               </div>
 
               <div className="border-t border-slate-100 pt-8 mt-8">
@@ -91,17 +89,19 @@ export default function ArticleDetail() {
             </article>
 
             {/* Related Posts */}
+            {relatedPosts.length > 0 && (
              <div className="mt-12">
               <h3 className="text-xl font-bold text-slate-900 mb-6">Bài viết liên quan</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 {posts.filter(p => p.id !== post.id && p.category === post.category).slice(0, 2).map(related => (
+                 {relatedPosts.map((related: any) => (
                     <Link key={related.id} to={`/bai-viet/${related.slug}`} className="bg-white p-5 rounded-xl block border border-slate-100 hover:shadow-md transition-all">
-                      <div className="text-xs text-slate-500 mb-2">{related.date}</div>
+                      <div className="text-xs text-slate-500 mb-2">{new Date(related.publishedAt || related.createdAt).toLocaleDateString('vi-VN')}</div>
                       <h4 className="font-bold text-slate-900 line-clamp-2 hover:text-primary transition-colors">{related.title}</h4>
                     </Link>
                  ))}
               </div>
             </div>
+            )}
           </div>
 
           {/* Sidebar */}
