@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "version": 1,
+    "defaultScene": "khu-a-tiep-don"
+  },
+  "paths": {
+    "demo": [
+      "khu-a-tiep-don",
+      "khu-a-khoa-kham-benh",
+      "khu-a-cap-cuu",
+      "khu-b-khoa-truyen-nhiem",
+      "khu-c-phau-thuat-gmhs",
+      "khu-c-ksnk",
+      "nha-9-tang-b1-nha-de-xe",
+      "nha-9-tang-chan-doan-hinh-anh",
+      "nha-9-tang-khoa-noi",
+      "nha-9-tang-khoa-phu-san"
+    ]
+  },
+  "aliases": {
+    "cap-cuu": "khu-a-cap-cuu",
+    "kham-benh": "khu-a-khoa-kham-benh",
+    "tiep-don": "khu-a-tiep-don",
+    "truyen-nhiem": "khu-b-khoa-truyen-nhiem",
+    "phau-thuat": "khu-c-phau-thuat-gmhs",
+    "ksnk": "khu-c-ksnk",
+    "cdha": "nha-9-tang-chan-doan-hinh-anh",
+    "noi": "nha-9-tang-khoa-noi",
+    "phu-san": "nha-9-tang-khoa-phu-san",
+    "nhi": "nha-9-tang-khoa-nhi",
+    "yhct": "nha-9-tang-khoa-yhct",
+    "dinh-duong": "nha-9-tang-khoa-dinh-duong",
+    "hstc": "nha-9-tang-cap-cuu-hstc",
+    "hanh-chinh": "nha-9-tang-khoi-hanh-chinh",
+    "b1": "nha-9-tang-b1-nha-de-xe"
+  },
+  "groups": [
+    {
+      "title": "Khu A",
+      "items": [
+        { "sceneId": "khu-a-tiep-don", "name": "Khu tiếp đón" },
+        { "sceneId": "khu-a-khoa-kham-benh", "name": "Khoa Khám Bệnh" },
+        { "sceneId": "khu-a-cap-cuu", "name": "Cấp cứu" }
+      ]
+    },
+    {
+      "title": "Khu B: Khu Truyền nhiễm",
+      "items": [
+        { "sceneId": "khu-b-khoa-truyen-nhiem", "name": "Khoa Truyền nhiễm" }
+      ]
+    },
+    {
+      "title": "Khu C: Khu phẫu thuật - GMHS",
+      "items": [
+        { "sceneId": "khu-c-phau-thuat-gmhs", "name": "Khoa phẫu thuật - GMHS" },
+        { "sceneId": "khu-c-ksnk", "name": "Khoa KSNK" }
+      ]
+    },
+    {
+      "title": "Khu nhà 9 tầng",
+      "items": [
+        { "sceneId": "nha-9-tang-b1-nha-de-xe", "name": "Tầng hầm B1: Nhà để xe" },
+        { "sceneId": "nha-9-tang-chan-doan-hinh-anh", "name": "Khoa Chẩn đoán hình ảnh" },
+        { "sceneId": "nha-9-tang-khoa-noi", "name": "Khoa Nội" },
+        { "sceneId": "nha-9-tang-khoa-phu-san", "name": "Khoa Phụ sản" },
+        { "sceneId": "nha-9-tang-khoa-nhi", "name": "Khoa Nhi" },
+        { "sceneId": "nha-9-tang-khoa-yhct", "name": "Khoa YHCT" },
+        { "sceneId": "nha-9-tang-khoa-dinh-duong", "name": "Khoa Dinh dưỡng" },
+        { "sceneId": "nha-9-tang-cap-cuu-hstc", "name": "Khoa Cấp cứu - Hồi sức tích cực" },
+        { "sceneId": "nha-9-tang-khoi-hanh-chinh", "name": "Khối hành chính" }
+      ]
+    }
+  ],
+  "scenes": {
+    "khu-a-tiep-don": {
+      "title": "Khu tiếp đón",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-a-tiep-don",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "generated", "theme": "reception" },
+      "demoHotspots": [
+        { "yaw": -20, "pitch": -5, "label": "Khoa Khám Bệnh", "target": "khu-a-khoa-kham-benh" },
+        { "yaw":  35, "pitch": -8, "label": "Cấp cứu",        "target": "khu-a-cap-cuu" }
+      ],
+      "annotations": [
+        { "yaw": 0, "pitch": 0, "label": "Quầy tiếp đón trung tâm", "text": "Nơi đăng ký khám bệnh và giải đáp thắc mắc cho bệnh nhân." },
+        { "yaw": 90, "pitch": -5, "label": "Khu vực chờ", "text": "Ghế ngồi chờ rộng rãi, thoáng mát phục vụ bệnh nhân và người nhà." }
+      ]
+    },
+    "khu-a-khoa-kham-benh": {
+      "title": "Khoa Khám Bệnh",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-a-khoa-kham-benh",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/khu-a-khoa-kham-benh.png" },
+      "demoHotspots": [
+         { "yaw": 10, "pitch": -5, "label": "Khu tiếp đón", "target": "khu-a-tiep-don" },
+         { "yaw": -20, "pitch": -5, "label": "Chẩn đoán hình ảnh", "target": "nha-9-tang-chan-doan-hinh-anh" }
+      ]
+    },
+    "khu-a-cap-cuu": {
+      "title": "Cấp cứu",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-a-cap-cuu",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "generated", "theme": "emergency" },
+      "demoHotspots": [
+        { "yaw": -30, "pitch": -6, "label": "Khu tiếp đón", "target": "khu-a-tiep-don" },
+        { "yaw":  25, "pitch": -6, "label": "Khoa Nội",     "target": "nha-9-tang-khoa-noi" }
+      ],
+      "annotations": [
+        { "yaw": 10, "pitch": -2, "label": "Giường cấp cứu", "text": "Trang bị đầy đủ máy monitor, oxy và thiết bị hồi sức." },
+        { "yaw": -40, "pitch": 0, "label": "Trạm y tá", "text": "Khu vực trực và theo dõi bệnh nhân 24/7." }
+      ]
+    },
+
+    "khu-b-khoa-truyen-nhiem": {
+      "title": "Khoa Truyền nhiễm",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-b-khoa-truyen-nhiem",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/khu-b-khoa-truyen-nhiem.jpg" }
+    },
+
+    "khu-c-phau-thuat-gmhs": {
+      "title": "Khoa phẫu thuật - GMHS",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-c-phau-thuat-gmhs",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-phau-thuat-gmhs.png"}
+    },
+    "khu-c-ksnk": {
+      "title": "Khoa KSNK",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/khu-c-ksnk",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/khu-c-ksnk.jpg" }
+    },
+
+    "nha-9-tang-b1-nha-de-xe": {
+      "title": "Tầng hầm B1: Nhà để xe",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-b1-nha-de-xe",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-b1-nha-de-xe.jpg" }
+    },
+    "nha-9-tang-chan-doan-hinh-anh": {
+      "title": "Khoa Chẩn đoán hình ảnh",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-chan-doan-hinh-anh",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-chan-doan-hinh-anh.png" },
+      "demoHotspots": [
+         { "yaw": 180, "pitch": 0, "label": "Khám Bệnh", "target": "khu-a-khoa-kham-benh" }
+      ]
+    },
+    "nha-9-tang-khoa-noi": {
+      "title": "Khoa Nội",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoa-noi",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "generated", "theme": "internal" },
+      "demoHotspots": [
+        { "yaw": -25, "pitch": -6, "label": "Cấp cứu",     "target": "khu-a-cap-cuu" },
+        { "yaw":  30, "pitch": -6, "label": "Khoa Phụ sản","target": "nha-9-tang-khoa-phu-san" }
+      ],
+      "annotations": [
+         { "yaw": 20, "pitch": -5, "label": "Phòng điều trị", "text": "Hệ thống phòng điều trị nội trú tiện nghi." }
+      ]
+    },
+    "nha-9-tang-khoa-phu-san": {
+      "title": "Khoa Phụ sản",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoa-phu-san",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-khoa-phu-san.png" },
+      "demoHotspots": [
+         { "yaw": 0, "pitch": -5, "label": "Khoa Nội", "target": "nha-9-tang-khoa-noi" },
+         { "yaw": 40, "pitch": -5, "label": "Khoa Nhi", "target": "nha-9-tang-khoa-nhi" }
+      ]
+    },
+    "nha-9-tang-khoa-nhi": {
+      "title": "Khoa Nhi",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoa-nhi",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-khoa-nhi.png" },
+      "demoHotspots": [
+         { "yaw": 180, "pitch": 0, "label": "Khoa Phụ sản", "target": "nha-9-tang-khoa-phu-san" }
+      ]
+    },
+    "nha-9-tang-khoa-yhct": {
+      "title": "Khoa YHCT",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoa-yhct",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-khoa-yhct.jpg" }
+    },
+    "nha-9-tang-khoa-dinh-duong": {
+      "title": "Khoa Dinh dưỡng",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoa-dinh-duong",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-khoa-dinh-duong.jpg" }
+    },
+    "nha-9-tang-cap-cuu-hstc": {
+      "title": "Khoa Cấp cứu - Hồi sức tích cực",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-cap-cuu-hstc",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-cap-cuu-hstc.jpg" }
+    },
+    "nha-9-tang-khoi-hanh-chinh": {
+      "title": "Khối hành chính",
+      "type": "multires",
+      "tilePath": "/vr360/scenes/nha-9-tang-khoi-hanh-chinh",
+      "initialView": { "yaw": 0, "pitch": 0, "fov": 1.2 },
+      "hotspots": [],
+      "fallback": { "type": "equirectangular", "panorama": "/vr360/panos/nha-9-tang-khoi-hanh-chinh.jpg" }
+    }
+  }
+}
