@@ -253,45 +253,8 @@ export default function MailboxForm() {
                     </button>
                 </div>
             </form>
-
-            {/* Sent Messages History (Local) */}
-            {sentMessages.length > 0 && (
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden">
-                    <button 
-                        onClick={() => setShowHistory(!showHistory)}
-                        className="w-full flex items-center justify-between px-6 py-4 bg-white hover:bg-slate-50 transition-colors"
-                    >
-                        <div className="flex items-center gap-2 text-slate-700 font-bold">
-                            <Send className="w-5 h-5 text-green-500" />
-                            Thư bạn đã gửi (trên thiết bị này)
-                            <span className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">{sentMessages.length}</span>
-                        </div>
-                        {showHistory ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
-                    </button>
-                    
-                    {showHistory && (
-                        <div className="divide-y divide-slate-200 border-t border-slate-200">
-                            {sentMessages.map(msg => (
-                                <div key={msg.id} className="p-6 bg-white/50 hover:bg-white transition-colors">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-slate-800">{msg.subject}</h4>
-                                        <span className="text-xs text-slate-500 ml-4 shrink-0">
-                                            {new Date(msg.createdAt).toLocaleString('vi-VN')}
-                                        </span>
-                                    </div>
-                                    <p className="text-sm text-slate-600 line-clamp-3 mb-3">{msg.content}</p>
-                                    {msg.images.length > 0 && (
-                                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                                            <ImageIcon className="w-4 h-4" />
-                                            {msg.images.length} hình ảnh đính kèm
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
         </div>
     );
 }
+
+

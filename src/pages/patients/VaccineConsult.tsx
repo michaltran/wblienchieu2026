@@ -19,8 +19,9 @@ export default function VaccineConsult() {
     limit: POSTS_PER_PAGE,
   });
 
-  const posts = data?.items || [];
+  const posts = (data?.items || []) as any[];
   const totalPages = data?.totalPages || 1;
+
 
   const breadcrumbs = [
     { label: "Trang chủ", href: "/" },

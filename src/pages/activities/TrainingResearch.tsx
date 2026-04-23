@@ -27,11 +27,11 @@ export default function TrainingResearch() {
     limit: PAGE_SIZE,
   });
 
-  const posts = data?.items || [];
+  const posts = (data?.items || []) as any[];
   const total = data?.total || 0;
   const totalPages = data?.totalPages || 1;
   const allTags = Array.from(new Set(posts.flatMap((p: any) => p.tags || [])));
-  const featuredPosts = posts.filter((p: any) => p.isFeatured);
+  const featuredPosts = posts.filter((p: any) => p.isFeatured) as any[];
 
   const breadcrumbs = [
     { label: "Hoạt động", href: "#" },

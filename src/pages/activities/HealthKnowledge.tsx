@@ -44,9 +44,9 @@ export default function HealthKnowledge() {
     limit: POSTS_PER_PAGE,
   });
 
-  const pagePosts = data?.items || [];
+  const pagePosts = (data?.items || []) as any[];
   const totalPages = data?.totalPages || 1;
-  const activeCategory = HEALTH_CATEGORIES.find(c => c.slug === categorySlug);
+  const activeCategory = HEALTH_CATEGORIES.find(c => c.slug === categorySlug) as any;
   const featuredPosts = pagePosts.filter((p: any) => p.isFeatured).slice(0, 4);
 
   const updateParams = (newParams: Record<string, any>) => {
@@ -91,7 +91,7 @@ export default function HealthKnowledge() {
                   {/* Left: Category Panel (Sticky) - 4 Cols */}
                   <div className="lg:col-span-3">
                       <HealthCategoryPanel
-                          categories={HEALTH_CATEGORIES}
+                          categories={HEALTH_CATEGORIES as any[]}
                           activeSlug={categorySlug}
                           onSelect={(slug) => updateParams({ cat: slug, page: 1 })}
                       />
