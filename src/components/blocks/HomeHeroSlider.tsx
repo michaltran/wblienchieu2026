@@ -13,18 +13,18 @@ import banner4 from "../../assets/banners/banner-04.svg";
 import banner5 from "../../assets/banners/banner-05.svg";
 
 const fallbackBanners: any[] = [
-  { id: '1', desktopImage: banner1, title: 'Banner 1' },
-  { id: '2', desktopImage: banner2, title: 'Banner 2' },
-  { id: '3', desktopImage: banner3, title: 'Banner 3' },
-  { id: '4', desktopImage: banner4, title: 'Banner 4' },
-  { id: '5', desktopImage: banner5, title: 'Banner 5' }
+  { id: '1', image: banner1, title: 'Banner 1' },
+  { id: '2', image: banner2, title: 'Banner 2' },
+  { id: '3', image: banner3, title: 'Banner 3' },
+  { id: '4', image: banner4, title: 'Banner 4' },
+  { id: '5', image: banner5, title: 'Banner 5' }
 ];
 
 export default function HomeHeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { t } = useI18n();
-  const { data: apiBanners } = usePublicBanners('home_hero');
+  const { data: apiBanners } = usePublicBanners('homepage_hero');
 
   const banners = apiBanners && apiBanners.length > 0 ? apiBanners : fallbackBanners;
 
@@ -52,8 +52,8 @@ export default function HomeHeroSlider() {
       >
         {banners.map((banner, index) => (
           <div key={index} className="w-full h-full flex-shrink-0 relative">
-             <img src={banner.desktopImage} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover hidden md:block" />
-             <img src={banner.mobileImage || banner.desktopImage} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover md:hidden" />
+             <img src={banner.image} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover hidden md:block" />
+             <img src={banner.mobileImage || banner.image} alt={banner.title || `Banner ${index + 1}`} className="w-full h-full object-cover md:hidden" />
              {/* Gradient Overlay for Text Readability */}
              <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/40 to-transparent" />
           </div>

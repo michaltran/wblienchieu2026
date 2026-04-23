@@ -3,11 +3,16 @@ import type { ListParams, ListResponse } from './posts';
 
 export interface Banner {
   id: string;
-  title: string;
-  desktopImage: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  image: string;                // trường backend trả về
   mobileImage?: string;
   link?: string;
+  buttonText?: string;
   position?: string;
+  isActive?: boolean;
+  orderIndex?: number;
 }
 
 export interface Setting {
@@ -42,26 +47,26 @@ export interface Media {
 
 export const contentApi = {
   // Banners
-  publicListBanners: async (position: string = 'home_hero'): Promise<Banner[]> => {
-    const response = await http.get('/api/content/banners/public', { params: { position } });
+  publicListBanners: async (position: string = 'homepage_hero'): Promise<Banner[]> => {
+    const response = await http.get('/api/banners/public', { params: { position } });
     return response.data;
   },
 
   // Albums
   publicListAlbums: async (params?: ListParams): Promise<ListResponse<Album>> => {
-    const response = await http.get('/api/content/albums/public', { params });
+    const response = await http.get('/api/albums/public', { params });
     return response.data;
   },
   
   // Media
   publicListMedia: async (params?: Omit<ListParams, 'type'> & { type?: string; albumId?: string }): Promise<ListResponse<Media>> => {
-    const response = await http.get('/api/content/media/public', { params });
+    const response = await http.get('/api/media/public', { params });
     return response.data;
   },
 
   // Settings
   publicGetSettings: async (): Promise<Record<string, string>> => {
-    const response = await http.get('/api/content/settings/public');
+    const response = await http.get('/api/settings/public');
     return response.data;
   },
 };

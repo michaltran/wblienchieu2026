@@ -75,74 +75,74 @@ export interface Drug {
 export const hospitalApi = {
   // Doctors
   publicListDoctors: async (params?: ListParams): Promise<ListResponse<Doctor>> => {
-    const response = await http.get('/api/hospital/doctors/public', { params });
+    const response = await http.get('/api/doctors/public', { params });
     return response.data;
   },
   publicGetDoctorBySlug: async (slug: string): Promise<Doctor> => {
-    const response = await http.get(`/api/hospital/doctors/public/${slug}`);
+    const response = await http.get(`/api/doctors/public/${slug}`);
     return response.data;
   },
 
   // Departments
   publicListDepartments: async (params?: ListParams): Promise<ListResponse<Department>> => {
-    const response = await http.get('/api/hospital/departments/public', { params });
+    const response = await http.get('/api/departments/public', { params });
     return response.data;
   },
   publicGetDepartmentBySlug: async (slug: string): Promise<Department> => {
-    const response = await http.get(`/api/hospital/departments/public/${slug}`);
+    const response = await http.get(`/api/departments/public/${slug}`);
     return response.data;
   },
 
   // Services
   publicListServices: async (params?: ListParams): Promise<ListResponse<Service>> => {
-    const response = await http.get('/api/hospital/services/public', { params });
+    const response = await http.get('/api/services/public', { params });
     return response.data;
   },
   publicGetServiceBySlug: async (slug: string): Promise<Service> => {
-    const response = await http.get(`/api/hospital/services/public/${slug}`);
+    const response = await http.get(`/api/services/public/${slug}`);
     return response.data;
   },
 
   // Drugs
   publicListDrugs: async (params?: ListParams): Promise<ListResponse<Drug>> => {
-    const response = await http.get('/api/hospital/drugs/public', { params });
+    const response = await http.get('/api/drugs/public', { params });
     return response.data;
   },
   publicGetDrugBySlug: async (slug: string): Promise<Drug> => {
-    const response = await http.get(`/api/hospital/drugs/public/${slug}`);
+    const response = await http.get(`/api/drugs/public/${slug}`);
     return response.data;
   },
 };
 
 // Admin APIs for Hospital CRUD
 export const doctorsApi = {
-  list: async (params: any) => (await http.get('/api/hospital/doctors', { params })).data,
-  get: async (id: string | number) => (await http.get(`/api/hospital/doctors/${id}`)).data,
-  create: async (data: any) => (await http.post('/api/hospital/doctors', data)).data,
-  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/doctors/${id}`, data)).data,
-  remove: async (id: string | number) => (await http.delete(`/api/hospital/doctors/${id}`)).data,
+  list: async (params: any) => (await http.get('/api/doctors', { params })).data,
+  get: async (id: string | number) => (await http.get(`/api/doctors/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/doctors', data)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/doctors/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/doctors/${id}`)).data,
 };
 
 export const departmentsApi = {
-  list: async (params: any) => (await http.get('/api/hospital/departments', { params })).data,
-  get: async (id: string | number) => (await http.get(`/api/hospital/departments/${id}`)).data,
-  create: async (data: any) => (await http.post('/api/hospital/departments', data)).data,
-  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/departments/${id}`, data)).data,
-  remove: async (id: string | number) => (await http.delete(`/api/hospital/departments/${id}`)).data,
+  list: async (params: any) => (await http.get('/api/departments', { params })).data,
+  get: async (id: string | number) => (await http.get(`/api/departments/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/departments', data)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/departments/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/departments/${id}`)).data,
 };
 
 export const servicesApi = {
-  list: async (params: any) => (await http.get('/api/hospital/services', { params })).data,
-  get: async (id: string | number) => (await http.get(`/api/hospital/services/${id}`)).data,
-  create: async (data: any) => (await http.post('/api/hospital/services', data)).data,
-  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/services/${id}`, data)).data,
-  remove: async (id: string | number) => (await http.delete(`/api/hospital/services/${id}`)).data,
+  list: async (params: any) => (await http.get('/api/services', { params })).data,
+  get: async (id: string | number) => (await http.get(`/api/services/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/services', data)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/services/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/services/${id}`)).data,
 };
 
 export const drugsApi = {
-  list: async (params: any) => (await http.get('/api/hospital/drugs', { params })).data,
-  get: async (id: string | number) => (await http.get(`/api/hospital/drugs/${id}`)).data,
-  create: async (data: any) => (await http.post('/api/hospital/drugs', data)).data,
-  update: async (id: string | number, data: any) => (await http.patch(`/api/hospital/drugs/${id}`, data)).data,
-  remove: async (id: string | number) => (await http.delete(`/api/hospital/drugs/${id}`)).data,
+  list: async (params: any) => (await http.get('/api/drugs', { params })).data,
+  get: async (id: string | number) => (await http.get(`/api/drugs/${id}`)).data,
+  create: async (data: any) => (await http.post('/api/drugs', data)).data,
+  update: async (id: string | number, data: any) => (await http.patch(`/api/drugs/${id}`, data)).data,
+  remove: async (id: string | number) => (await http.delete(`/api/drugs/${id}`)).data,
 };
