@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { Upload, X, Send, Image as ImageIcon, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useRef } from "react";
+import { Upload, X, Send, Trash2 } from "lucide-react";
 import { validateFiles, fileToDataUrl, formatBytes, MAX_FILE_COUNT } from "../../lib/uploads/imageUpload";
-import { addMailboxMessage, getMailboxMessages, type MailboxMessage } from "../../lib/storage/mailboxStore";
+import { http } from "../../lib/api/http";
 
 export default function MailboxForm() {
     const [name, setName] = useState("");
@@ -14,14 +14,6 @@ export default function MailboxForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    // History state
-    const [sentMessages, setSentMessages] = useState<MailboxMessage[]>([]);
-    const [showHistory, setShowHistory] = useState(false);
-
-    useEffect(() => {
-        setSentMessages(getMailboxMessages());
-    }, []);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -54,51 +46,43 @@ export default function MailboxForm() {
         e.preventDefault();
         setSuccessMessage("");
         setErrors([]);
-        
-        if (!name || !contact || !subject || !content) {
-            setErrors(["Vui lòng điền đầy đủ các trường bắt buộc (*)."]);
+
+        if (!name || !content) {
+            setErrors(["Vui lòng điền đầy đủ Họ tên và Nội dung (*)."]);
+            return;
+        }
+        if (content.trim().length < 10) {
+            setErrors(["Nội dung phải ít nhất 10 ký tự."]);
             return;
         }
 
         setIsSubmitting(true);
+        try {
+            // Gửi thật lên backend API
+            await http.post('/api/messages/public', {
+                senderName: name.trim(),
+                senderEmail: contact.includes('@') ? contact.trim() : undefined,
+                senderPhone: !contact.includes('@') ? contact.trim() : undefined,
+                subject: subject.trim() || 'Gửi từ hộp thư',
+                message: content.trim(),
+                type: 'mailbox',
+            });
 
-        // Simulate network delay
-        await new Promise(r => setTimeout(r, 800));
-
-        // Create message object
-        const newMessage: MailboxMessage = {
-            id: crypto.randomUUID(),
-            name,
-            phoneOrEmail: contact,
-            subject,
-            content,
-            createdAt: new Date().toISOString(),
-            images: files.map((f, i) => ({
-                name: f.name,
-                size: f.size,
-                type: f.type,
-                dataUrl: previews[i] // Store base64 strictly for demo
-            }))
-        };
-
-        // Save locally
-        addMailboxMessage(newMessage);
-
-        // Update UI
-        setSentMessages(getMailboxMessages());
-        
-        // Reset form
-        setName("");
-        setContact("");
-        setSubject("");
-        setContent("");
-        setFiles([]);
-        setPreviews([]);
-        setSuccessMessage("Thư của bạn đã được gửi thành công! Cảm ơn ý kiến đóng góp của bạn.");
-        setIsSubmitting(false);
-
-        // Scroll to success message
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Reset form
+            setName("");
+            setContact("");
+            setSubject("");
+            setContent("");
+            setFiles([]);
+            setPreviews([]);
+            setSuccessMessage("Đã gửi thành công! Chúng tôi sẽ liên hệ bạn trong thời gian sớm nhất.");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || 'Gửi thất bại. Vui lòng thử lại sau.';
+            setErrors([msg]);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleClear = () => {

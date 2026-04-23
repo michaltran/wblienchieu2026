@@ -168,21 +168,23 @@ export default function AdminPostEditor() {
             {/* Sidebar */}
             <div className="space-y-6">
                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                     <div>
-                         <label className="block text-sm font-bold text-slate-700 mb-1">Danh mục</label>
-                         <select 
-                             value={form.type}
-                             onChange={e => setForm({...form, type: e.target.value as PostType})}
-                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-                         >
-                             <option value="news">Tin tức</option>
-                             <option value="health">Y học thường thức</option>
-                             <option value="training">Đào tạo & NCKH</option>
-                             <option value="procurement">Đấu thầu</option>
-                             <option value="recruitment">Tuyển dụng</option>
-                             <option value="adminReform">Cải cách hành chính</option>
-                         </select>
-                     </div>
+                      <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-1">Loại bài viết</label>
+                          <select
+                              value={form.type}
+                              onChange={e => setForm({...form, type: e.target.value as PostType})}
+                              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                          >
+                              <option value="news">📰 Tin tức</option>
+                              <option value="health">🏥 Y học thường thức</option>
+                              <option value="training">🎓 Đào tạo &amp; NCKH</option>
+                              <option value="procurement">📋 Đấu thầu mua sắm</option>
+                              <option value="recruitment">👥 Tuyển dụng</option>
+                              <option value="adminReform">⚙️ Cải cách hành chính</option>
+                              <option value="other">📄 Khác</option>
+                          </select>
+                      </div>
+
                      
                      <div>
                          <label className="block text-sm font-bold text-slate-700 mb-2">Ảnh đại diện</label>

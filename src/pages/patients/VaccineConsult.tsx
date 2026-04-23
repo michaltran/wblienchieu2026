@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import PatientCategoryLayout from "../../components/layout/PatientCategoryLayout";
 import PatientPostList from "../../components/blocks/PatientPostList";
 import SimplePagination from "../../components/ui/SimplePagination";
-import { patientPosts } from "../../data/patientPosts";
-import { patientCategories } from "../../data/patientCategories";
+import { usePublicPostsList } from "../../hooks/usePublicPosts";
+import { Loader2 } from "lucide-react";
 
 const POSTS_PER_PAGE = 10;
 
@@ -11,33 +11,27 @@ export default function VaccineConsult() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const category = patientCategories.find(c => c.key === "vaccine");
-  
-  if (!category) return null;
+  const { data, isLoading } = usePublicPostsList({
+    type: 'health',
+    tag: 'tiem-chung',
+    search: searchQuery || undefined,
+    page: currentPage,
+    limit: POSTS_PER_PAGE,
+  });
+
+  const posts = data?.items || [];
+  const totalPages = data?.totalPages || 1;
 
   const breadcrumbs = [
     { label: "Trang chủ", href: "/" },
     { label: "Dành cho người bệnh", href: "#" },
-    { label: category.title },
+    { label: "Tư vấn tiêm chủng" },
   ];
-
-  // Filter & Pagination Logic
-  const filteredPosts = useMemo(() => {
-    return patientPosts
-      .filter(p => p.categoryKey === "vaccine")
-      .filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [searchQuery]);
-
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const currentPosts = filteredPosts.slice(
-    (currentPage - 1) * POSTS_PER_PAGE,
-    currentPage * POSTS_PER_PAGE
-  );
 
   return (
     <PatientCategoryLayout
-      title={category.title}
-      description={category.description}
+      title="Tư vấn tiêm chủng – Vắc xin"
+      description="Thông tin về lịch tiêm chủng, các loại vắc xin và hướng dẫn phòng bệnh cho mọi lứa tuổi."
       breadcrumbs={breadcrumbs}
     >
       {/* Search Bar */}
@@ -48,7 +42,7 @@ export default function VaccineConsult() {
             value={searchQuery}
             onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1); // Reset to page 1 on search
+                setCurrentPage(1);
             }}
             className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#1E73BE] focus:border-transparent outline-none transition-all"
           />
@@ -58,11 +52,24 @@ export default function VaccineConsult() {
       </div>
 
       {/* Post List */}
-      <PatientPostList posts={currentPosts} categorySlug="tu-van-tiem-chung-vac-xin" />
+      {isLoading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="w-8 h-8 animate-spin text-[#1E73BE]" />
+        </div>
+      ) : (
+        <>
+          <PatientPostList posts={posts} categorySlug="tu-van-tiem-chung-vac-xin" />
+          {posts.length === 0 && (
+            <p className="text-center text-slate-500 italic py-12">
+              Chưa có bài viết nào trong chuyên mục này.
+            </p>
+          )}
+        </>
+      )}
 
       {/* Pagination */}
       <div className="mt-8 border-t border-slate-100 pt-8">
-          <SimplePagination 
+          <SimplePagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
