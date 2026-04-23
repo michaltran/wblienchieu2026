@@ -3,21 +3,21 @@ import type { ContentPost } from "../../types/content";
 export function filterByQuery(posts: ContentPost[], query: string): ContentPost[] {
   if (!query.trim()) return posts;
   const q = query.toLowerCase();
-  return posts.filter(post => 
-    post.title.toLowerCase().includes(q) || 
-    post.excerpt.toLowerCase().includes(q)
+  return posts.filter(post =>
+    post.title.toLowerCase().includes(q) ||
+    (post.excerpt ?? '').toLowerCase().includes(q)
   );
 }
 
 export function filterByTag(posts: ContentPost[], tag: string | null): ContentPost[] {
   if (!tag) return posts;
-  return posts.filter(post => post.tags.includes(tag));
+  return posts.filter(post => (post.tags ?? []).includes(tag));
 }
 
 export function sortByDate(posts: ContentPost[], direction: 'desc' | 'asc' = 'desc'): ContentPost[] {
   return [...posts].sort((a, b) => {
-    const da = new Date(a.date).getTime();
-    const db = new Date(b.date).getTime();
+    const da = new Date(a.date ?? a.createdAt ?? 0).getTime();
+    const db = new Date(b.date ?? b.createdAt ?? 0).getTime();
     return direction === 'desc' ? db - da : da - db;
   });
 }

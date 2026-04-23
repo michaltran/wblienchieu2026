@@ -29,7 +29,7 @@ export default function FeaturedStrip({ posts, baseUrl }: FeaturedStripProps) {
            
            <div className="absolute bottom-0 left-0 p-6 md:p-8 z-20 w-full">
               <div className="flex gap-2 mb-3">
-                  {mainPost.tags.slice(0, 2).map(tag => (
+                  {(mainPost.tags ?? []).slice(0, 2).map(tag => (
                       <span key={tag} className="px-2.5 py-1 rounded-md bg-[#1E73BE] text-white text-xs font-bold uppercase tracking-wider">{tag}</span>
                   ))}
               </div>
@@ -40,7 +40,7 @@ export default function FeaturedStrip({ posts, baseUrl }: FeaturedStripProps) {
               <div className="flex items-center text-white/60 text-sm gap-4">
                   <span className="flex items-center gap-1.5">
                       <Calendar className="w-4 h-4" />
-                      {mainPost.date}
+                      {mainPost.date ?? mainPost.createdAt?.slice(0, 10)}
                   </span>
               </div>
            </div>
@@ -55,7 +55,7 @@ export default function FeaturedStrip({ posts, baseUrl }: FeaturedStripProps) {
                     </div>
                     <div className="flex flex-col justify-center">
                         <div className="flex flex-wrap gap-2 mb-1.5">
-                            {post.tags.slice(0,1).map(t => (
+                            {(post.tags ?? []).slice(0,1).map(t => (
                                 <span key={t} className="text-[10px] font-bold uppercase text-[#1E73BE] tracking-wide">{t}</span>
                             ))}
                         </div>
@@ -63,7 +63,7 @@ export default function FeaturedStrip({ posts, baseUrl }: FeaturedStripProps) {
                             {post.title}
                         </h4>
                         <span className="text-xs text-slate-400 flex items-center gap-1">
-                             <Calendar className="w-3 h-3" /> {post.date}
+                             <Calendar className="w-3 h-3" /> {post.date ?? post.createdAt?.slice(0, 10)}
                         </span>
                     </div>
                </Link>
