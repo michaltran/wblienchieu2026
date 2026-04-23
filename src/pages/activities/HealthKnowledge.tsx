@@ -12,8 +12,6 @@ import HealthToolbar from "../../components/blocks/HealthToolbar";
 import HealthPostGrid from "../../components/blocks/HealthPostGrid";
 import HealthPagination from "../../components/blocks/HealthPagination";
 
-// Layouts
-import IntroLayout from "../../components/layout/IntroLayout"; // Assuming generic layout exists
 
 const POSTS_PER_PAGE = 8;
 
@@ -144,30 +142,5 @@ export default function HealthKnowledge() {
       </main>
     </div>
   );
-
-              {/* 4. Bottom CTA */}
-              <div className="pb-16">
-                   <div className="bg-gradient-to-r from-[#1E73BE] to-sky-600 rounded-3xl p-10 md:p-14 text-center text-white relative overflow-hidden shadow-2xl">
-                       <div className="absolute top-0 left-0 w-full h-full bg-[url('/assets/pattern.svg')] opacity-10" />
-                       <div className="relative z-10">
-                           <h2 className="text-3xl font-bold mb-4">Cần tư vấn chuyên sâu?</h2>
-                           <p className="text-blue-100 mb-8 text-lg max-w-2xl mx-auto">
-                               Nếu bạn có thắc mắc về các vấn đề sức khỏe, đừng ngần ngại liên hệ với đội ngũ y bác sĩ của chúng tôi.
-                           </p>
-                           <div className="flex flex-col sm:flex-row justify-center gap-4">
-                               <a href="tel:0905453677" className="px-8 py-4 bg-white text-[#1E73BE] font-bold rounded-xl shadow-lg hover:bg-slate-50 transition-all">
-                                   Gọi 0905 453 677
-                               </a>
-                               <a href="/dang-ky-kham" className="px-8 py-4 bg-blue-600/30 backdrop-blur-sm border border-white/20 text-white font-bold rounded-xl hover:bg-blue-600/50 transition-all">
-                                   Đăng ký khám
-                               </a>
-                           </div>
-                       </div>
-                   </div>
-              </div>
-
-          </div>
-      </main>
-    </div>
-  );
 }
+
